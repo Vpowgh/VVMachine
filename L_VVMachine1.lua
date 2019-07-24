@@ -26,16 +26,16 @@ vtaction = {
 	[vt.TEMP] = function (x) return x*0.01-273.15 end,
 }
 
-Extract   = {value=0, name='Extract', offset=66, valuetype=vt.TEMP}
-Exhaust   = {value=0, name='Exhaust', offset=67, valuetype=vt.TEMP}
-Outdoor   = {value=0, name='Outdoor', offset=68, valuetype=vt.TEMP}
-Supply    = {value=0, name='Supply', offset=70, valuetype=vt.TEMP}
+Extract   = {value=0, name='Extract_temperature', offset=66, valuetype=vt.TEMP}
+Exhaust   = {value=0, name='Exhaust_temperature', offset=67, valuetype=vt.TEMP}
+Outdoor   = {value=0, name='Outdoor_temperature', offset=68, valuetype=vt.TEMP}
+Supply    = {value=0, name='Supply_temperature', offset=70, valuetype=vt.TEMP}
 Fanspeed  = {value=0, name='Fanspeed', offset=65, valuetype=vt.INT}
 Humidity  = {value=0, name='Humidity', offset=75, valuetype=vt.INT}
-State     = {value=0, name='State', offset=108, valuetype=vt.INT}
+Profile   = {value=0, name='Profile', offset=108, valuetype=vt.INT}
 
 
-Vallox_signals = {Extract, Exhaust, Outdoor, Supply, Fanspeed, Humidity, State}
+Vallox_signals = {Extract, Exhaust, Outdoor, Supply, Fanspeed, Humidity, Profile}
 
 ------------------------------------------------
 -- Debug --
@@ -226,11 +226,12 @@ function VVM_run()
 				for i=1, #Vallox_signals do
 					local t=tonumber(string.byte(decoded, Vallox_signals[i].offset*2-1),10)*256 + tonumber(string.byte(decoded, Vallox_signals[i].offset*2),10)
 					Vallox_signals[i].value = vtaction[Vallox_signals[i].valuetype](t)
+                    setVar(Vallox_signals[i].name, Vallox_signals[i].value, pluginDevice, MYSID)
 				end
 
 				--UI handling
-                local row2 = string.format("%.1f °C     ", Extract.value) .. string.format("%.1f °C     ", Exhaust.value) .. string.format("%d %%", Fanspeed.value)
-                local row4 = string.format("%.1f °C     ", Supply.value)  .. string.format("%.1f °C     ", Outdoor.value) .. string.format("%d %%", Humidity.value)
+                local row2 = string.format("%4.1f °C     ", Extract.value) .. string.format("%4.1f °C     ", Exhaust.value) .. string.format("%d %%", Fanspeed.value)
+                local row4 = string.format("%4.1f °C     ", Supply.value)  .. string.format("%4.1f °C     ", Outdoor.value) .. string.format("%d %%", Humidity.value)
                 setVar("UI_row2", row2, pluginDevice, MYSID)
                 setVar("UI_row4", row4, pluginDevice, MYSID)
                 log(row2)
@@ -259,7 +260,7 @@ function start(dev)
 		VVM_ip = ""
 	end
 
-	--read pollrate given by user
+	--read pollrate given by user, limit min and max
 	s = luup.variable_get(MYSID, "ValloxPollRate", pluginDevice)
 
 	if s ~= nil then
@@ -283,6 +284,18 @@ function start(dev)
 		--if there is no such variable, create it with default value
 		luup.variable_set(MYSID, "ValloxPollRate", "60", pluginDevice)
 		VVM_pollrate = 60
+	end
+
+	--check internal variables, create them if not existing
+	for i=1, #Vallox_signals do
+		s = luup.variable_get(MYSID, Vallox_signals[i].name, pluginDevice)
+
+		if s ~= nil then
+			Vallox_signals[i].value = tonumber(s)
+		else
+			--if there is no such variable, create it with default value
+			luup.variable_set(MYSID, Vallox_signals[i].name, 0, pluginDevice)
+		end
 	end
 
 	log(string.format("IP: %s", VVM_ip))
