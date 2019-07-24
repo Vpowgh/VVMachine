@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!-- 
+S_VVMachine1.xml
+Vera plug-in for Vallox MV ventilation machines 
+Developed by Vpow 2019
+-->
+<scpd xmlns="urn:schemas-upnp-org:service-1-0">
+	<specVersion>
+		<major>1</major>
+		<minor>0</minor>
+	</specVersion>
+		<serviceStateTable>
+			<stateVariable sendEvents="yes">
+			<name>ModeStatus</name>
+			<dataType>i4</dataType>
+			<defaultValue>0</defaultValue>
+			<shortCode>example</shortCode>
+		</stateVariable>
+	</serviceStateTable>
+	<actionList>
+		<action>
+			<name>Service_example</name>
+			<argumentList>
+				<argument>
+					<name>NewModeTarget</name>
+					<direction>in</direction>
+					<relatedStateVariable>ModeStatus</relatedStateVariable>
+				</argument>
+			</argumentList>
+		</action>
+	</actionList>
+</scpd>

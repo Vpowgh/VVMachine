@@ -1,0 +1,287 @@
+{
+"default_icon":"https://pbs.twimg.com/profile_images/694087139835932677/IFZcAcVi_400x400.jpg",
+"state_icons": [],
+"Tabs": [{
+		"Label": {
+			"lang_tag": "tabname_control",
+			"text": "Control"
+		},
+		"Position": "0",
+		"TabType": "flash",
+		"TopNavigationTab": 1,
+		"ControlGroup": [{
+			"id": 2,
+			"isSingle": 1,
+			"scenegroup": 2
+		},{
+			"id": 4,
+			"isSingle": 1,
+			"scenegroup": 4
+		}
+		],
+		"SceneGroup": [{
+			"id": 2,
+			"top": 1,
+			"left": 0,
+			"x": 1,
+			"y": 2
+		},{
+			"id": 4,
+			"top": 1,
+			"left": 0,
+			"x": 1,
+			"y": 4
+		}
+		],
+		"Control": [{
+			"ControlGroup": "2",
+			"ControlType": "variable",
+			"top": "0",
+			"left": "0",
+			"Display": {
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Variable": "UI_row1",
+				"Top": 0,
+				"Left": 0,
+				"Width": 200,
+				"Height": 25
+			}
+		},{
+			"ControlGroup": "2",
+			"ControlType": "line_break"
+		},{
+			"ControlGroup": "2",
+			"ControlType": "variable",
+			"top": "0",
+			"left": "0",
+			"Display": {
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Variable": "UI_row2",
+				"Top": 30,
+				"Left": 0,
+				"Width": 200,
+				"Height": 25
+			}
+		},{
+			"ControlGroup": "2",
+			"ControlType": "line_break"
+		},{
+			"ControlGroup": "2",
+			"ControlType": "variable",
+			"top": "0",
+			"left": "0",
+			"Display": {
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Variable": "UI_row3",
+				"Top": 60,
+				"Left": 0,
+				"Width": 200,
+				"Height": 15
+			}
+		},{
+			"ControlGroup": "2",
+			"ControlType": "line_break"
+		},{
+			"ControlGroup": "2",
+			"ControlType": "variable",
+			"top": "0",
+			"left": "0",
+			"Display": {
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Variable": "UI_row4",
+				"Top": 90,
+				"Left": 0,
+				"Width": 200,
+				"Height": 25
+			}
+		},{
+			"ControlGroup": "2",
+			"ControlType": "line_break"
+		},{
+			"ControlGroup": "2",
+			"ControlType": "variable",
+			"top": "0",
+			"left": "0",
+			"Display": {
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Variable": "UI_row5",
+				"Top": 120,
+				"Left": 0,
+				"Width": 200,
+				"Height": 25
+			}
+		},{
+			"ControlGroup": "4",
+			"ControlType": "button",
+			"top": "0",
+			"left": "0",
+			"Label": {
+				"lang_tag": "ui7_mode_home",
+				"text": "Home"
+			},
+			"Display": {
+				"Top": 0,
+				"Left": 170,
+				"Width": 75,
+				"Height": 25,
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Variable": "ModeStatus",
+				"Value": "Home"
+			},
+			"Command": {
+				"HumanFriendlyText": {
+					"lang_tag": "ui7_mode_home",
+					"text": "Home"
+				},
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Action": "SetModeTarget",
+				"Parameters": [{
+					"Name": "NewModeTarget",
+					"Value": "Home"
+				}]
+			},
+			"ControlCode": "VVMachine_mode_home"
+		},{
+			"ControlGroup": "4",
+			"ControlType": "line_break"
+		},{
+			"ControlGroup": "4",
+			"ControlType": "button",
+			"top": "0",
+			"left": "0",
+			"Label": {
+				"lang_tag": "ui7_mode_away",
+				"text": "Away"
+			},
+			"Display": {
+				"Top": 30,
+				"Left": 170,
+				"Width": 75,
+				"Height": 25,
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Variable": "ModeStatus",
+				"Value": "Away"
+			},
+			"Command": {
+				"HumanFriendlyText": {
+					"lang_tag": "ui7_mode_away",
+					"text": "Away"
+				},
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Action": "SetModeTarget",
+				"Parameters": [{
+					"Name": "NewModeTarget",
+					"Value": "Away"
+				}]
+			},
+			"ControlCode": "VVMachine_mode_away"
+		},{
+			"ControlGroup": "4",
+			"ControlType": "line_break"
+		},{
+			"ControlGroup": "4",
+			"ControlType": "button",
+			"top": "0",
+			"left": "0",
+			"Label": {
+				"lang_tag": "ui7_mode_boost",
+				"text": "Boost"
+			},
+			"Display": {
+				"Top": 60,
+				"Left": 170,
+				"Width": 75,
+				"Height": 25,
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Variable": "ModeStatus",
+				"Value": "Boost"
+			},
+			"Command": {
+				"HumanFriendlyText": {
+					"lang_tag": "ui7_mode_boost",
+					"text": "Boost"
+				},
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Action": "SetModeTarget",
+				"Parameters": [{
+					"Name": "NewModeTarget",
+					"Value": "Boost"
+				}]
+			},
+			"ControlCode": "VVMachine_mode_boost"
+		},{
+			"ControlGroup": "4",
+			"ControlType": "line_break"
+		},{
+			"ControlGroup": "4",
+			"ControlType": "button",
+			"top": "0",
+			"left": "0",
+			"Label": {
+				"lang_tag": "ui7_mode_fireplace",
+				"text": "Fireplace"
+			},
+			"Display": {
+				"Top": 90,
+				"Left": 170,
+				"Width": 75,
+				"Height": 25,
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Variable": "ModeStatus",
+				"Value": "Fireplace"
+			},
+			"Command": {
+				"HumanFriendlyText": {
+					"lang_tag": "ui7_mode_fireplace",
+					"text": "Fireplace"
+				},
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Action": "actionExample",
+				"Parameters": [{
+					"Name": "NewModeTarget",
+					"Value": "Fireplace"
+				}]
+			},
+			"ControlCode": "VVMachine_mode_fireplace"
+		},{
+			"ControlType": "label",
+			"Display": {
+				"Top": 200,
+				"Left": 0,
+				"Width": 320,
+				"Height": 24
+			},
+			"Label": {
+				"lang_tag": "tb_vvmachine",
+				"text": "BETA VERSION"
+			}
+		}
+	],
+	"Conditions": []
+	},
+	{
+		"Label": {
+			"lang_tag": "ui7_advanced",
+			"text": "Advanced"
+		},
+		"Position": 1,
+		"TabType": "javascript",
+		"ScriptName": "shared.js",
+		"Function": "advanced_device"
+	},
+	{
+			"Label": {
+				"lang_tag": "ui7_logs",
+				"text": "Logs"
+			},
+			"Position": 2,
+			"TabType": "javascript",
+			"ScriptName": "shared.js",
+			"Function": "device_logs"
+		}
+	],
+	"device_type": "urn:schemas-vpow-com:device:VVMachine:1"
+}
+
+
+

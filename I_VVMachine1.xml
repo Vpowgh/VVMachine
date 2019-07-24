@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!-- 
+I_VVMachine1.xml
+Vera plug-in for Vallox MV ventilation machines 
+Developed by Vpow 2019
+-->
+<implementation>
+	<functions>
+	local pluginModule
+	_,pluginModule = pcall( require, "L_VVMachine1")
+
+	function pluginStart(dev)
+		pcall(pluginModule.start, dev)
+	end
+
+	function pluginRun()
+		pcall(pluginModule.VVM_run)
+	end
+	</functions>
+	<startup>pluginStart</startup>
+	<actionList>
+		<action>
+		<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
+		<name>Service_example</name>
+		<run>
+			pluginModule.actionExample(lul_device, lul_settings)
+		</run>
+	</action>
+	</actionList>
+</implementation>
