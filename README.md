@@ -7,7 +7,7 @@ Displays main temperatures (Indoor, Exhaust, Extract, Outdoor), fan speed and cu
 # Installation
 - Install from Vera (Apps -> Install apps)
 or
-- Download files from github to your computer, upload to vera (Apps -> Develop apps -> Luup files). Then select Create device and give D_VVMachine1.xml as Upnp Device Filename. The device can be renamed afterwards.
+- Download files from github to your computer, upload to your Vera (Apps -> Develop apps -> Luup files). Then select Create device and give D_VVMachine1.xml as Upnp Device Filename. The device can be renamed afterwards.
 
 # Configuration
 Go to device control page and navigate to Advanced -> Variables. 
