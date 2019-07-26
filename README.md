@@ -15,6 +15,8 @@ or
 Go to device control page and navigate to Advanced -> Variables. 
 Set variable ValloxIP to your Vallox MV unit IP addess, for example 192.168.1.15. The IP depends on your network setup and must be static i.e. not to change over time. Input IP in x.x.x.x format, no any extra characters or port numbers. VVMachine uses port 80 always.
 Optionally set variable ValloxPollRate to adjust update interval for values. Default is 20s, minimum 10s and maximum 120s.
+![alt text](https://sqjeeq.am.files.1drv.com/y4m4sUT1yZ2LXKJltdrjI2ijEzszs6JOm4ZGSN5slVV0714FYwyzpz-L7u9pJ5KwvHRvQTueuyUEar0KoA6UMev9XQIWUap_B-zTSPfYUJYr_fXwL1UWyb-OHUUyBVojxa33acpjkNS_Ozdd-qaOzrIVoAZLCtGnN2r3scFDkiN33SpbA3B51NP8usDcXGP2C3cXgQUozz3DhI6uqY_YHkzmg)
+
 
 # Usage
 The user interface shows current values of following signals:
