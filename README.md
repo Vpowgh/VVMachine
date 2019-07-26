@@ -6,7 +6,9 @@ Displays main temperatures (Indoor, Exhaust, Extract, Outdoor), fan speed and cu
 
 # Installation
 - Install from Vera (Apps -> Install apps)
+
 or
+
 - Download files from github to your computer, upload to your Vera (Apps -> Develop apps -> Luup files). Then select Create device and give D_VVMachine1.xml as Upnp Device Filename. The device can be renamed afterwards.
 
 # Configuration
@@ -16,12 +18,12 @@ Optionally set variable ValloxPollRate to adjust update interval for values. Def
 
 # Usage
 The user interface shows current values of following signals:
--indoor temperature
--exhaust temperature
--extract temperature
--outdoor temperature
--fan speed
--humidity
+- indoor temperature
+- exhaust temperature
+- extract temperature
+- outdoor temperature
+- fan speed
+- humidity
 
 Next to display are four control buttons for selecting active profile: Home, Away, Boost and Fireplace.
 The buttons also reflect the state of the Vallox unit, if profile is changed from other control location the buttons status will change accordingly. Note that changing profile is not instantenous, it will take some time that command is processed and status is relayed back to plugin.
