@@ -6,25 +6,54 @@ Developed by Vpow 2019
 -->
 <implementation>
 	<functions>
-	local pluginModule
-	_,pluginModule = pcall( require, "L_VVMachine1")
+		_,pluginModule = pcall( require, "L_VVMachine1")
 
-	function pluginStart(dev)
-		pcall(pluginModule.start, dev)
-	end
+		function pluginStart(dev)
+			pcall(pluginModule.VVM_start, dev)
+		end
 
-	function pluginRun()
-		pcall(pluginModule.VVM_run)
-	end
+		function pluginRun()
+			pcall(pluginModule.VVM_run)
+		end
+		
+		function pluginUpdateParams()
+			pcall(pluginModule.updateUserParams)
+		end
+
 	</functions>
 	<startup>pluginStart</startup>
 	<actionList>
 		<action>
-		<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
-		<name>Service_example</name>
-		<run>
-			pluginModule.actionExample(lul_device, lul_settings)
-		</run>
-	</action>
+			<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
+			<name>HomeButton</name>
+			<run>
+				pluginModule.actionHomeButton(lul_device)
+				return true
+			</run>
+		</action>
+		<action>
+			<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
+			<name>AwayButton</name>
+			<run>
+				pluginModule.actionAwayButton(lul_device)
+				return true
+			</run>
+		</action>
+		<action>
+			<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
+			<name>BoostButton</name>
+			<run>
+				pluginModule.actionBoostButton(lul_device)
+				return true
+			</run>
+		</action>
+		<action>
+			<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
+			<name>FireplaceButton</name>
+			<run>
+				pluginModule.actionFireplaceButton(lul_device)
+				return true
+			</run>
+		</action>
 	</actionList>
 </implementation>

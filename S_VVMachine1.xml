@@ -10,23 +10,23 @@ Developed by Vpow 2019
 		<minor>0</minor>
 	</specVersion>
 		<serviceStateTable>
-			<stateVariable sendEvents="yes">
-			<name>ModeStatus</name>
-			<dataType>i4</dataType>
-			<defaultValue>0</defaultValue>
-			<shortCode>example</shortCode>
-		</stateVariable>
-	</serviceStateTable>
+		</serviceStateTable>
 	<actionList>
 		<action>
-			<name>Service_example</name>
-			<argumentList>
-				<argument>
-					<name>NewModeTarget</name>
-					<direction>in</direction>
-					<relatedStateVariable>ModeStatus</relatedStateVariable>
-				</argument>
-			</argumentList>
+			<name>HomeButton</name>
+			<argumentList></argumentList>
+		</action>
+		<action>
+			<name>AwayButton</name>
+			<argumentList></argumentList>
+		</action>
+		<action>
+			<name>BoostButton</name>
+			<argumentList></argumentList>
+		</action>
+		<action>
+			<name>FireplaceButton</name>
+			<argumentList></argumentList>
 		</action>
 	</actionList>
 </scpd>
