@@ -42,3 +42,15 @@ Connected and not connected device view:
 
 
 Currently the plugin does not support standard services which means usage with third party applications might be limited. Also usage with Vera scenes is not currently possible. Automations can be created for example with Reactor plugin which is able to read all variables and set all actions.
+
+
+# Links
+[Vallox ventilation units](https://www.vallox.com/en/products/vallox_ventilation_units.html)
+
+[Vallox Modbus manual](https://www.vallox.com/files/1092/Manual_Modbus_ENG_20190215_PRINT.pdf)
+
+[Python implementation of Vallox websocket interface](https://github.com/yozik04/vallox_websocket_api)
+
+
+
+
