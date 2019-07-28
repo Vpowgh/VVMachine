@@ -16,6 +16,9 @@ local VVM_ip = ""
 local VVM_pollrate = 60
 local isconnected = false
 local pluginDevice = nil
+local wsheader = ""
+
+local CellStatusNames = { [0] = 'HEAT RECOVERY', [1] = 'COOL RECOVERY', [2] = 'BYPASS', [3] = 'DEFROST'}
 
 --conversion functions for signals
 local vt = { INT = 0, FLO1 = 1, FLO2 = 2, TEMP = 3 }
@@ -26,7 +29,6 @@ local vtaction = {
 	[vt.TEMP] = function (x) return tonumber(string.format("%.1f", (x-27315)*0.01)) end --0.1 precision is enough for temperatures
 }
 
-
 --selected signals from Vallox machine, offset is location in table received by reading metrics
 local Extract				= {value=0, name='Extract_temperature', offset=66, valuetype=vt.TEMP}
 local Exhaust				= {value=0, name='Exhaust_temperature', offset=67, valuetype=vt.TEMP}
@@ -35,6 +37,7 @@ local Supply				= {value=0, name='Supply_temperature', offset=70, valuetype=vt.T
 local Fanspeed				= {value=0, name='Fanspeed', offset=65, valuetype=vt.INT}
 local Humidity				= {value=0, name='Humidity', offset=75, valuetype=vt.INT}
 local Profile				= {value=0, name='Profile', offset=108, valuetype=vt.INT}
+local CellState				= {value=0, name='CellState', offset=115, valuetype=vt.INT}
 
 local BoostTimer			= {value=0, name='BoostTimer', offset=111, valuetype=vt.INT}
 local BoostTime				= {value=0, name='BoostTime', offset=247, valuetype=vt.INT}
@@ -48,7 +51,8 @@ local ExtraTimer			= {value=0, name='ExtraTimer', offset=113, valuetype=vt.INT}
 local ExtraTime				= {value=0, name='ExtraTime', offset=198, valuetype=vt.INT}
 local ExtraTimerEnabled		= {value=0, name='ExtraTimerEnabled', offset=271, valuetype=vt.INT}
 
-local Vallox_signals = {Extract, Exhaust, Outdoor, Supply, Fanspeed, Humidity, Profile, BoostTimer, BoostTime, BoostTimerEnabled, FireplaceTimer, FireplaceTime, FireplaceTimerEnabled, ExtraTimer, ExtraTime, ExtraTimerEnabled}
+
+local Vallox_signals = {Extract, Exhaust, Outdoor, Supply, Fanspeed, Humidity, Profile, BoostTimer, BoostTime, BoostTimerEnabled, FireplaceTimer, FireplaceTime, FireplaceTimerEnabled, ExtraTimer, ExtraTime, ExtraTimerEnabled, CellState}
 
 ------------------------------------------------
 -- Debug --
@@ -75,9 +79,10 @@ local function setVar(name, val, dev, sid)
 end
 
 
-------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
 -- Vallox ventilation unit control via websockets --
-------------------------------------------------------
+-- websocket implementation originally from reneboer https://github.com/reneboer/vera-Harmony-Hub
+------------------------------------------------------------------------------------------------------------
 
 local function VVM_wsconnect(host, port)
 	sock = socket.tcp()
@@ -92,18 +97,7 @@ local function VVM_wsconnect(host, port)
 
 	sock:settimeout(30)
 
-	local key = "IVEs+XMFJmzMFU/4qqJEqw=="
-
-	-- upgrade tp websocket header
-	local req = 'GET / HTTP/1.1' .. '\r\n' ..
-	'Host: ' .. host .. '\r\n' ..
-	'Sec-WebSocket-Version: 13' .. '\r\n' ..
-	'Sec-WebSocket-Key: ' .. key .. '\r\n' ..
-	'Connection: Upgrade' .. '\r\n' ..
-	'Upgrade: websocket' .. '\r\n' ..
-	'\r\n' --add empty line last!
-
-	local _,err = sock:send(req)
+	local _,err = sock:send(wsheader)
 	if err then
 		socketstate = sv.CLOSED
 		sock:close()
@@ -159,8 +153,8 @@ end
 
 
 local function encode(data,opcode)
-	local header = (opcode or 1) + 128 -- TEXT is default opcode, we always send with FIN bit set
-	local payload = 128  -- We always send with mask bit set.
+	local header = (opcode or 1) + 128 -- FIN bit set always
+	local payload = 128  -- MASK bit set always
 	local len = #data
 	local chunks = {}
 
@@ -247,7 +241,7 @@ local function VVM_wsreceive()
 
 	local opcode,pllen = chunk:byte(1,2)
 
-	-- Fin bit always set, so just substract 128 to get opcode. Mask bit never set.
+	-- FIN bit always set, so just substract 128 to get opcode. Mask bit never set.
 	opcode = opcode - 128
 
 	local decoded,err = "",nil
@@ -312,10 +306,13 @@ local function VVM_ReadMetrics()
 				end
 				
 				--UI update
-				local row2 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">" .. string.format("%4.1f°C  %4.1f°C  %3d%%", Extract.value, Exhaust.value, Fanspeed.value) .. "</span>"
-				local row4 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">" .. string.format("%4.1f°C  %4.1f°C  %3d%%", Supply.value, Outdoor.value, Humidity.value) .. "</span>"
+				local row2 = string.format("<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">%4.1f°C  %4.1f°C  %3d%%</span>", Extract.value, Exhaust.value, Fanspeed.value)
+				local row3 = string.format("<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">%4.1f°C  %4.1f°C  %3d%%</span>", Supply.value, Outdoor.value, Humidity.value)
+				local row5 = string.format("<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">  %s</span>",CellStatusNames[CellState.value])
+				
 				setVar("UI_row2", row2, pluginDevice, MYSID)
-				setVar("UI_row4", row4, pluginDevice, MYSID)
+				setVar("UI_row3", row3, pluginDevice, MYSID)
+				setVar("UI_row5", row5, pluginDevice, MYSID)
 
 				isconnected = true
 			else
@@ -326,8 +323,9 @@ local function VVM_ReadMetrics()
 
 	setVar("Connected", bool_to_number[isconnected], pluginDevice, MYSID) --change logo according connection status
 	if not isconnected then --clear display to make sure user sees there is no connection
-		setVar("UI_row2","", pluginDevice, MYSID)
-		setVar("UI_row4","", pluginDevice, MYSID)
+		setVar("UI_row2","<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\"> </span>", pluginDevice, MYSID)
+		setVar("UI_row3","<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\"> </span>", pluginDevice, MYSID)
+		setVar("UI_row5","", pluginDevice, MYSID)
 		setVar("ModeStatus","none", dev, MYSID)
 	end
 end
@@ -383,6 +381,9 @@ function updateUserParams(dev, ser, var, vold, vnew)
 		luup.variable_set(MYSID, "ValloxPollRate", VVM_pollrate, pluginDevice)
 	end
 
+	-- upgrade tp websocket header, use fixed key, need to have one empty line last!
+	wsheader = 'GET / HTTP/1.1\r\nHost: ' .. VVM_ip .. '\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: 3K4M5P7Q8RATBUCVEXFYG2J3\r\nConnection: Upgrade\r\nUpgrade: websocket\r\n\r\n'
+
 	log(string.format("IP: %s", VVM_ip))
 	log(string.format("Pollrate: %s", VVM_pollrate))
 end
@@ -416,9 +417,9 @@ function VVM_start(dev)
 	--UI init
 	setVar("UI_row1","<span style = \"color:rgb(0,113,184);font-size: 9pt;font-family:monospace;font-weight:bold\">Indoor  ►  Exhaust    Fan   </span>", pluginDevice, MYSID)
 	setVar("UI_row2","", pluginDevice, MYSID)
-	setVar("UI_row3"," ", pluginDevice, MYSID)
-	setVar("UI_row4","", pluginDevice, MYSID)
-	setVar("UI_row5","<span style = \"color:rgb(0,113,184);font-size: 9pt;font-family:monospace;font-weight:bold\">Supply  ◄  Outdoor    RH   </span>", pluginDevice, MYSID)
+	setVar("UI_row3","", pluginDevice, MYSID)
+	setVar("UI_row4","<span style = \"color:rgb(0,113,184);font-size: 9pt;font-family:monospace;font-weight:bold\">Supply  ◄  Outdoor    RH   </span>", pluginDevice, MYSID)
+	setVar("UI_row5","", pluginDevice, MYSID)
 
 	--all init done, start running the program
 	luup.call_delay("pluginRun", 0, "")
@@ -438,31 +439,31 @@ end
 -- Actions -- --must be global functions!
 ------------------------------------------------
 
-function actionHomeButton(dev)
+function actionSetProfileHome(dev)
 	if isconnected then
 		VVM_SetProfile("Home")
-		log("Home button")
+		log("set Home")
 	end
 end
 
-function actionAwayButton(dev)
+function actionSetProfileAway(dev)
 	if isconnected then
 		VVM_SetProfile("Away")
-		log("Away button")
+		log("set Away")
 	end
 end
 
-function actionBoostButton(dev)
+function actionSetProfileBoost(dev)
 	if isconnected then
 		VVM_SetProfile("Boost")
-		log("Boost button")
+		log("set Boost")
 	end
 end
 
-function actionFireplaceButton(dev)
+function actionSetProfileFireplace(dev)
 	if isconnected then
 		VVM_SetProfile("Fireplace")
-		log("Fireplace button")
+		log("set Fireplace")
 	end
 end
 

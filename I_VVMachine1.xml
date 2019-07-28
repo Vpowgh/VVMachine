@@ -19,33 +19,33 @@ Developed by Vpow 2019
 	<actionList>
 		<action>
 			<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
-			<name>HomeButton</name>
+			<name>SetProfileHome</name>
 			<run>
-				pluginModule.actionHomeButton(lul_device)
+				pluginModule.actionSetProfileHome(lul_device)
 				return true
 			</run>
 		</action>
 		<action>
 			<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
-			<name>AwayButton</name>
+			<name>SetProfileAway</name>
 			<run>
-				pluginModule.actionAwayButton(lul_device)
+				pluginModule.actionSetProfileAway(lul_device)
 				return true
 			</run>
 		</action>
 		<action>
 			<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
-			<name>BoostButton</name>
+			<name>SetProfileBoost</name>
 			<run>
-				pluginModule.actionBoostButton(lul_device)
+				pluginModule.actionSetProfileBoost(lul_device)
 				return true
 			</run>
 		</action>
 		<action>
 			<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
-			<name>FireplaceButton</name>
+			<name>SetProfileFireplace</name>
 			<run>
-				pluginModule.actionFireplaceButton(lul_device)
+				pluginModule.actionSetProfileFireplace(lul_device)
 				return true
 			</run>
 		</action>

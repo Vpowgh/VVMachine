@@ -13,19 +13,19 @@ Developed by Vpow 2019
 		</serviceStateTable>
 	<actionList>
 		<action>
-			<name>HomeButton</name>
+			<name>SetProfileHome</name>
 			<argumentList></argumentList>
 		</action>
 		<action>
-			<name>AwayButton</name>
+			<name>SetProfileAway</name>
 			<argumentList></argumentList>
 		</action>
 		<action>
-			<name>BoostButton</name>
+			<name>SetProfileBoost</name>
 			<argumentList></argumentList>
 		</action>
 		<action>
-			<name>FireplaceButton</name>
+			<name>SetProfileFireplace</name>
 			<argumentList></argumentList>
 		</action>
 	</actionList>

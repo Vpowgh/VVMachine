@@ -144,7 +144,7 @@
 					"text": "Home"
 				},
 				"Service": "urn:vpow-com:serviceId:VVMachine1",
-				"Action": "HomeButton",
+				"Action": "SetProfileHome",
 				"Parameters": []
 			},
 			"ControlCode": "VVMachine_mode_home"
@@ -175,7 +175,7 @@
 					"text": "Away"
 				},
 				"Service": "urn:vpow-com:serviceId:VVMachine1",
-				"Action": "AwayButton",
+				"Action": "SetProfileAway",
 				"Parameters": []
 			},
 			"ControlCode": "VVMachine_mode_away"
@@ -206,7 +206,7 @@
 					"text": "Boost"
 				},
 				"Service": "urn:vpow-com:serviceId:VVMachine1",
-				"Action": "BoostButton",
+				"Action": "SetProfileBoost",
 				"Parameters": []
 			},
 			"ControlCode": "VVMachine_mode_boost"
@@ -237,7 +237,7 @@
 					"text": "Fireplace"
 				},
 				"Service": "urn:vpow-com:serviceId:VVMachine1",
-				"Action": "FireplaceButton",
+				"Action": "SetProfileFireplace",
 				"Parameters": []
 			},
 			"ControlCode": "VVMachine_mode_fireplace"
