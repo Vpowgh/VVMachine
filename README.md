@@ -9,17 +9,15 @@ Displays main temperatures (Indoor, Exhaust, Extract, Outdoor), fan speed, curre
 
 or
 
-- Download files from github to your computer, upload to your Vera (Apps -> Develop apps -> Luup files). Then select Create device and give D_VVMachine1.xml as Upnp Device Filename. The device can be renamed afterwards.
+- Download files from github to your computer, upload to your Vera (Apps -> Develop apps -> Luup files). Then select Create device and give D_VVMachine1.xml as Upnp Device Filename. The device can be renamed afterwards. Then reload Luup by going to Apps -> Develop apps -> Test Luup code, enter and run code: luup.reload() Then hard refresh your browser (usually Ctrl+F5).
 
 # Configuration
 Go to device control page and navigate to Advanced -> Variables. 
 Set variable ValloxIP to your Vallox MV unit IP addess, for example 192.168.1.15. The IP depends on your network setup and must be static i.e. not to change over time. Input IP in x.x.x.x format, no any extra characters or port numbers. VVMachine uses port 80 always.
-Optionally set variable ValloxPollRate to adjust update interval for values. Default is 20s, minimum 10s and maximum 120s.
 
 Device configuration:
 
-![alt text](https://sqjeeq.am.files.1drv.com/y4m4sUT1yZ2LXKJltdrjI2ijEzszs6JOm4ZGSN5slVV0714FYwyzpz-L7u9pJ5KwvHRvQTueuyUEar0KoA6UMev9XQIWUap_B-zTSPfYUJYr_fXwL1UWyb-OHUUyBVojxa33acpjkNS_Ozdd-qaOzrIVoAZLCtGnN2r3scFDkiN33SpbA3B51NP8usDcXGP2C3cXgQUozz3DhI6uqY_YHkzmg)
-
+![alt text](https://sqjeeq.am.files.1drv.com/y4m0qxMLJzkxtwMdTMzuVZI60y3OIg7ArgFP0cT4NAdRIaewPhQcLVjkDIG-LybdfrAhyUxAOnLQLH2VEx_3LRS4GvS7UMcV8UaIwRUTpLqPAx5eaJ2wFtC-TJfoQsK0oOF-6WvvRmQHXRr4Se75lHVKJdi4ViX5W2l_pKYFXRIwZHIkDRjwaXfhz6A8nQiqNWlsXECXyIYcqN-TAx4DzP5xg)
 
 # Usage
 The user interface shows current values of following signals:
@@ -42,8 +40,7 @@ Connected and not connected device view:
 https://rgi8eq.am.files.1drv.com/y4m4F4ZmC62eo5D7XNl3vKEsDpFuwS9O78LR9nOkmlFaDzKt39D5GoY-M6dDD4nVm8405IEX024SmdVOhNfDIZlQFA-QakLAuknKXrBe-CF2fF1AWv0qbZkmLzz7RQ1xoAK-hl_ACPDHJ4x0Zus-G3vySQQCy6_aceB-jovlZiuG9r-nkrCZx3L2hNub5ypQVu6oQ13GGI57swRPT7rps5QDA)   
 ![alt text](https://sqjfeq.am.files.1drv.com/y4mHsuuUko7DCnRtbX4T5V-kn49ls4mEFEbUH4YfCY1uIikNDpfdIfwT-qLEbLLpSG2Ackw8FPoSvazkOZV7dcdGgXoUQkZzB4XP1iKOgi1-eimpAuOhDI_X67u5zTn8BGQXg_gyfZX_r8LTq5gyv17c_Y6yFUDBeSNoTX7pBRNZPhoOErJEuVwNgJz76FtEEqqoDmhkNLNu7siZVD5jvqALw)
 
-
-Currently the plugin does not support standard services which means usage with third party applications might be limited. Also usage with Vera scenes is not currently possible. Automations can be created for example with Reactor plugin which is able to read all variables and set all actions.
+Currently the plugin does not support standard services which means usage with third party applications and Vera scenes might be limited. Automations can be created for example with Reactor plugin which is able to read all variables and set all actions.
 
 
 # Links
@@ -52,7 +49,3 @@ Currently the plugin does not support standard services which means usage with t
 [Vallox Modbus manual](https://www.vallox.com/files/1092/Manual_Modbus_ENG_20190215_PRINT.pdf)
 
 [Python implementation of Vallox websocket interface](https://github.com/yozik04/vallox_websocket_api)
-
-
-
-
