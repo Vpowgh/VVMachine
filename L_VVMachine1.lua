@@ -85,6 +85,13 @@ end
 ------------------------------------------------------------------------------------------------------------
 
 local function VVM_wsconnect(host, port)
+
+	if socketstate ~= sv.CLOSED then
+		socketstate = sv.CLOSED
+		sock:close()
+		log("socket force closed")
+	end
+
 	sock = socket.tcp()
 
 	local _,err = sock:connect(host,port)
@@ -95,6 +102,7 @@ local function VVM_wsconnect(host, port)
 		return nil,err
 	end
 
+	socketstate = sv.OPEN
 	sock:settimeout(30)
 
 	local _,err = sock:send(wsheader)
@@ -111,6 +119,8 @@ local function VVM_wsconnect(host, port)
 	repeat
 		local line,err = sock:receive('*l')
 		if err then
+			socketstate = sv.CLOSED
+			sock:close()
 			log("websocket reply failed")
 			return nil,err
 		end
@@ -121,12 +131,11 @@ local function VVM_wsconnect(host, port)
 	until line == ''
 
 	if not hdr_ok then
+			socketstate = sv.CLOSED
+			sock:close()
 			log("websocket handshake failed")
 		return nil,'websocket handshake failed'
 	end
-	
-	--websocket connection OK
-	socketstate = sv.OPEN
 
 	return true,'websocket connection ok'
 end
@@ -260,13 +269,14 @@ local function VVM_wsreceive()
 			return nil,err
 		end
 	else
+		socketstate = sv.CLOSED
+		sock:close()
 		return nil,'Bad response'
 	end
 	
 	--all done, socket can be closed
 	socketstate = sv.CLOSED
 	sock:close()
-	
 	return true, decoded
 end
 
@@ -337,7 +347,10 @@ local function VVM_SetProfile(p)
 	local a, b = VVM_wsconnect(VVM_ip,80)
 
 	if a ~= nil then
-		VVM_wssend(p)
+		local a, b = VVM_wssend(p)
+		if a ~= nil then
+			VVM_wsreceive()
+		end
 	end
 end
 

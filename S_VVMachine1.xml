@@ -10,6 +10,12 @@ Developed by Vpow 2019
 		<minor>0</minor>
 	</specVersion>
 		<serviceStateTable>
+			<stateVariable sendEvents="yes">
+				<name>ModeStatus</name>
+				<dataType>string</dataType>
+				<defaultValue>'None'</defaultValue>
+				<shortCode>mode</shortCode>
+			</stateVariable>
 		</serviceStateTable>
 	<actionList>
 		<action>
