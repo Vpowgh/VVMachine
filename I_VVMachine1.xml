@@ -6,20 +6,14 @@ Developed by Vpow 2019
 -->
 <implementation>
 	<functions>
-		_,pluginModule = pcall( require, "L_VVMachine1")
-
 		function pluginStart(dev)
+			pluginModule = require "L_VVMachine1"
+
+			pluginRun = pluginModule.VVM_run
+			pluginUpdateParams = pluginModule.updateUserParams
+
 			pcall(pluginModule.VVM_start, dev)
 		end
-
-		function pluginRun()
-			pcall(pluginModule.VVM_run)
-		end
-		
-		function pluginUpdateParams()
-			pcall(pluginModule.updateUserParams)
-		end
-
 	</functions>
 	<startup>pluginStart</startup>
 	<actionList>

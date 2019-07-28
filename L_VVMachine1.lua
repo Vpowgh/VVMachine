@@ -14,7 +14,7 @@ local sv = { CLOSED = 0, OPEN = 1, IS_CLOSING = 2, ERROR = -1 }
 local socketstate = sv.CLOSED
 local VVM_ip = ""
 local VVM_pollrate = 60
-local isconnected = 0
+local isconnected = false
 local pluginDevice = nil
 
 --conversion functions for signals
@@ -60,6 +60,8 @@ end
 ------------------------------------------------
 -- Helper functions --
 ------------------------------------------------
+
+local bool_to_number={ [true]=1, [false]=0 }
 
 -- Set variable, only if value has changed.
 local function setVar(name, val, dev, sid)
@@ -277,7 +279,7 @@ end
 
 local function VVM_ReadMetrics()
 	local a, b = VVM_wsconnect(VVM_ip,80)
-	isconnected = 0
+	isconnected = false
 
 	if a ~= nil then
 		local a, b = VVM_wssend("metrics")
@@ -315,18 +317,17 @@ local function VVM_ReadMetrics()
 				setVar("UI_row2", row2, pluginDevice, MYSID)
 				setVar("UI_row4", row4, pluginDevice, MYSID)
 
-				isconnected = 1
+				isconnected = true
 			else
 				log("receiving metrics failed")
 			end
 		end
 	end
 
-	--update connection status, will change logo accordingly
-	setVar("Connected", isconnected, pluginDevice, MYSID)
-	if isconnected == 0 then --clear display to make sure user sees there is no connection
-		setVar("UI_row2","-", pluginDevice, MYSID)
-		setVar("UI_row4","-", pluginDevice, MYSID)
+	setVar("Connected", bool_to_number[isconnected], pluginDevice, MYSID) --change logo according connection status
+	if not isconnected then --clear display to make sure user sees there is no connection
+		setVar("UI_row2","", pluginDevice, MYSID)
+		setVar("UI_row4","", pluginDevice, MYSID)
 		setVar("ModeStatus","none", dev, MYSID)
 	end
 end
@@ -414,9 +415,9 @@ function VVM_start(dev)
 
 	--UI init
 	setVar("UI_row1","<span style = \"color:rgb(0,113,184);font-size: 9pt;font-family:monospace;font-weight:bold\">Indoor  ►  Exhaust    Fan   </span>", pluginDevice, MYSID)
-	setVar("UI_row2","-", pluginDevice, MYSID)
+	setVar("UI_row2","", pluginDevice, MYSID)
 	setVar("UI_row3"," ", pluginDevice, MYSID)
-	setVar("UI_row4","-", pluginDevice, MYSID)
+	setVar("UI_row4","", pluginDevice, MYSID)
 	setVar("UI_row5","<span style = \"color:rgb(0,113,184);font-size: 9pt;font-family:monospace;font-weight:bold\">Supply  ◄  Outdoor    RH   </span>", pluginDevice, MYSID)
 
 	--all init done, start running the program
@@ -438,23 +439,31 @@ end
 ------------------------------------------------
 
 function actionHomeButton(dev)
-	VVM_SetProfile("Home")
-	log("Home button")
+	if isconnected then
+		VVM_SetProfile("Home")
+		log("Home button")
+	end
 end
 
 function actionAwayButton(dev)
-	VVM_SetProfile("Away")
-	log("Away button")
+	if isconnected then
+		VVM_SetProfile("Away")
+		log("Away button")
+	end
 end
 
 function actionBoostButton(dev)
-	VVM_SetProfile("Boost")
-	log("Boost button")
+	if isconnected then
+		VVM_SetProfile("Boost")
+		log("Boost button")
+	end
 end
 
 function actionFireplaceButton(dev)
-	VVM_SetProfile("Fireplace")
-	log("Fireplace button")
+	if isconnected then
+		VVM_SetProfile("Fireplace")
+		log("Fireplace button")
+	end
 end
 
 
