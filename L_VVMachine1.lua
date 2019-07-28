@@ -13,7 +13,7 @@ local bit = require('bit')
 local sv = { CLOSED = 0, OPEN = 1, IS_CLOSING = 2, ERROR = -1 }
 local socketstate = sv.CLOSED
 local VVM_ip = ""
-local VVM_pollrate = 60
+local VVM_pollrate = 10 --poll Vallox unit every 10s
 local isconnected = false
 local pluginDevice = nil
 local wsheader = ""
@@ -21,20 +21,21 @@ local wsheader = ""
 local CellStatusNames = { [0] = 'HEAT RECOVERY', [1] = 'COOL RECOVERY', [2] = 'BYPASS', [3] = 'DEFROST'}
 
 --conversion functions for signals
-local vt = { INT = 0, FLO1 = 1, FLO2 = 2, TEMP = 3 }
+local vt = {INT = 0, FLO1 = 1, FLO2 = 2, TEMPC = 3, TEMPF = 4}
 local vtaction = {
 	[vt.INT]  = function (x) return x end,
 	[vt.FLO1] = function (x) return x*0.1 end,
 	[vt.FLO2] = function (x) return x*0.01 end,
-	[vt.TEMP] = function (x) return tonumber(string.format("%.1f", (x-27315)*0.01)) end --0.1 precision is enough for temperatures
+	[vt.TEMPC] = function (x) return tonumber(string.format("%.1f", (x-27315)*0.01)) end, --0.1 precision is enough for temperatures
+	[vt.TEMPF] = function (x) return tonumber(string.format("%.1f", (x-27315)*0.018 + 32.0)) end
 }
 
 --selected signals from Vallox machine, offset is location in table received by reading metrics
-local Extract				= {value=0, name='Extract_temperature', offset=66, valuetype=vt.TEMP}
-local Exhaust				= {value=0, name='Exhaust_temperature', offset=67, valuetype=vt.TEMP}
-local Outdoor				= {value=0, name='Outdoor_temperature', offset=68, valuetype=vt.TEMP}
-local Supply				= {value=0, name='Supply_temperature', offset=70, valuetype=vt.TEMP}
-local Fanspeed				= {value=0, name='Fanspeed', offset=65, valuetype=vt.INT}
+local Extract				= {value=0, name='ExtractTemperature', offset=66, valuetype=vt.TEMPC}
+local Exhaust				= {value=0, name='ExhaustTemperature', offset=67, valuetype=vt.TEMPC}
+local Outdoor				= {value=0, name='OutdoorTemperature', offset=68, valuetype=vt.TEMPC}
+local Supply				= {value=0, name='SupplyTemperature', offset=70, valuetype=vt.TEMPC}
+local Fanspeed				= {value=0, name='FanSpeed', offset=65, valuetype=vt.INT}
 local Humidity				= {value=0, name='Humidity', offset=75, valuetype=vt.INT}
 local Profile				= {value=0, name='Profile', offset=108, valuetype=vt.INT}
 local CellState				= {value=0, name='CellState', offset=115, valuetype=vt.INT}
@@ -367,38 +368,10 @@ function updateUserParams(dev, ser, var, vold, vnew)
 		VVM_ip = ""
 	end
 
-	--read pollrate given by user, limit min and max
-	s = luup.variable_get(MYSID, "ValloxPollRate", pluginDevice)
-
-	if s ~= nil then
-		local limited = false
-		s = tonumber(s)
-
-		if s<10 then
-			s = 10
-			limited = true
-		elseif s>180 then
-			s = 180
-			limited = true
-		end
-
-		VVM_pollrate = s
-
-		if limited then
-			luup.variable_set(MYSID, "ValloxPollRate", VVM_pollrate, pluginDevice)
-			log("user given pollrate limited")
-		end
-	else
-		--if there is no such variable, create it with default value
-		VVM_pollrate = 20
-		luup.variable_set(MYSID, "ValloxPollRate", VVM_pollrate, pluginDevice)
-	end
-
 	-- upgrade tp websocket header, use fixed key, need to have one empty line last!
 	wsheader = 'GET / HTTP/1.1\r\nHost: ' .. VVM_ip .. '\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: 3K4M5P7Q8RATBUCVEXFYG2J3\r\nConnection: Upgrade\r\nUpgrade: websocket\r\n\r\n'
 
 	log(string.format("IP: %s", VVM_ip))
-	log(string.format("Pollrate: %s", VVM_pollrate))
 end
 
 
