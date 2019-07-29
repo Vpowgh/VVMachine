@@ -315,12 +315,15 @@ local function VVM_ReadMetrics()
 				if st ~=nil then
 					setVar("ModeStatus",st, dev, MYSID)
 				end
-				
+
 				--UI update
-				local row2 = string.format("<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">%4.1f°C  %4.1f°C  %3d%%</span>", Extract.value, Exhaust.value, Fanspeed.value)
-				local row3 = string.format("<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">%4.1f°C  %4.1f°C  %3d%%</span>", Supply.value, Outdoor.value, Humidity.value)
+				--Vera UI is truncating spaces, so in order to keep string lengths as wanted spaces are replaced with empty chars. max. temperature string length is 5 (-xx.x)
+				local row2,_ = string.gsub(string.format("% 5.1f°C % 5.1f°C  %3d%%", Extract.value, Exhaust.value, Fanspeed.value),' ',' ')
+				row2 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">" .. row2 .. "</span>"
+				local row3,_ = string.gsub(string.format("% 5.1f°C % 5.1f°C  %3d%%", Supply.value, Outdoor.value, Humidity.value),' ',' ')
+				row3 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">" .. row3 .. "</span>"
 				local row5 = string.format("<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">  %s</span>",CellStatusNames[CellState.value])
-				
+
 				setVar("UI_row2", row2, pluginDevice, MYSID)
 				setVar("UI_row3", row3, pluginDevice, MYSID)
 				setVar("UI_row5", row5, pluginDevice, MYSID)
@@ -401,10 +404,10 @@ function VVM_start(dev)
 	end
 
 	--UI init
-	setVar("UI_row1","<span style = \"color:rgb(0,113,184);font-size: 9pt;font-family:monospace;font-weight:bold\">Indoor  ►  Exhaust    Fan   </span>", pluginDevice, MYSID)
+	setVar("UI_row1","<span style = \"color:rgb(0,113,184);font-size: 9pt;font-family:monospace;font-weight:bold\"> Indoor  ►  Exhaust    Fan   </span>", pluginDevice, MYSID)
 	setVar("UI_row2","", pluginDevice, MYSID)
 	setVar("UI_row3","", pluginDevice, MYSID)
-	setVar("UI_row4","<span style = \"color:rgb(0,113,184);font-size: 9pt;font-family:monospace;font-weight:bold\">Supply  ◄  Outdoor    RH   </span>", pluginDevice, MYSID)
+	setVar("UI_row4","<span style = \"color:rgb(0,113,184);font-size: 9pt;font-family:monospace;font-weight:bold\"> Supply  ◄  Outdoor    RH    </span>", pluginDevice, MYSID)
 	setVar("UI_row5","", pluginDevice, MYSID)
 
 	--all init done, start running the program
