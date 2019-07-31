@@ -40,8 +40,9 @@ Connected and not connected device view:
 https://rgi8eq.am.files.1drv.com/y4m4F4ZmC62eo5D7XNl3vKEsDpFuwS9O78LR9nOkmlFaDzKt39D5GoY-M6dDD4nVm8405IEX024SmdVOhNfDIZlQFA-QakLAuknKXrBe-CF2fF1AWv0qbZkmLzz7RQ1xoAK-hl_ACPDHJ4x0Zus-G3vySQQCy6_aceB-jovlZiuG9r-nkrCZx3L2hNub5ypQVu6oQ13GGI57swRPT7rps5QDA)   
 ![alt text](https://sqjfeq.am.files.1drv.com/y4mHsuuUko7DCnRtbX4T5V-kn49ls4mEFEbUH4YfCY1uIikNDpfdIfwT-qLEbLLpSG2Ackw8FPoSvazkOZV7dcdGgXoUQkZzB4XP1iKOgi1-eimpAuOhDI_X67u5zTn8BGQXg_gyfZX_r8LTq5gyv17c_Y6yFUDBeSNoTX7pBRNZPhoOErJEuVwNgJz76FtEEqqoDmhkNLNu7siZVD5jvqALw)
 
-Currently the plugin does not support standard services which means usage with third party applications and Vera scenes might be limited. Automations can be created for example with Reactor plugin which is able to read all variables and set all actions.
+The plugin itself does not support standard device services e.g. temperature or humidity or others. If this functionality is needed it can be achieved by using another plugin, for example https://github.com/toggledbits/VirtualSensor which can be used to create wanted sensor types and setup to pull data from VVMachine plugin.
 
+The plugin provides basic events (like temperature goes below or above) to be used in Vera scenes and notifications. If more complex automation is needed it can be again achieved by using another plugin, for example https://github.com/toggledbits/Reactor which provides great selection of rules for any task.
 
 # Links
 [Vallox ventilation units](https://www.vallox.com/en/products/vallox_ventilation_units.html)
