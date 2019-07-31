@@ -9,14 +9,53 @@ Developed by Vpow 2019
 		<major>1</major>
 		<minor>0</minor>
 	</specVersion>
-		<serviceStateTable>
-			<stateVariable sendEvents="yes">
-				<name>ModeStatus</name>
-				<dataType>string</dataType>
-				<defaultValue>'None'</defaultValue>
-				<shortCode>mode</shortCode>
-			</stateVariable>
-		</serviceStateTable>
+	<serviceStateTable>
+		<stateVariable sendEvents="yes">
+			<name>ModeStatus</name>
+			<dataType>string</dataType>
+			<shortCode>modestatus</shortCode>
+		</stateVariable>
+		<stateVariable sendEvents="yes">
+			<name>Connected</name>
+			<dataType>string</dataType>
+			<shortCode>connected</shortCode>
+		</stateVariable>
+		<stateVariable sendEvents="yes">
+			<name>ExtractTemperature</name>
+			<dataType>float</dataType>
+			<shortCode>extracttemp</shortCode>
+		</stateVariable>
+		<stateVariable sendEvents="yes">
+			<name>ExhaustTemperature</name>
+			<dataType>float</dataType>
+			<shortCode>exhausttemp</shortCode>
+		</stateVariable>
+		<stateVariable sendEvents="yes">
+			<name>OutdoorTemperature</name>
+			<dataType>float</dataType>
+			<shortCode>outdoortemp</shortCode>
+		</stateVariable>
+		<stateVariable sendEvents="yes">
+			<name>SupplyTemperature</name>
+			<dataType>float</dataType>
+			<shortCode>supplytemp</shortCode>
+		</stateVariable>
+		<stateVariable sendEvents="yes">
+			<name>FanSpeed</name>
+			<dataType>int</dataType>
+			<shortCode>fanspeed</shortCode>
+		</stateVariable>
+		<stateVariable sendEvents="yes">
+			<name>Humidity</name>
+			<dataType>int</dataType>
+			<shortCode>humidity</shortCode>
+		</stateVariable>
+		<stateVariable sendEvents="yes">
+			<name>CellState</name>
+			<dataType>int</dataType>
+			<shortCode>cellstate</shortCode>
+		</stateVariable>
+	</serviceStateTable>
 	<actionList>
 		<action>
 			<name>SetProfileHome</name>

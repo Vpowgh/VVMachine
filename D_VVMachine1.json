@@ -27,8 +27,7 @@
 			"id": 4,
 			"isSingle": 1,
 			"scenegroup": 4
-		}
-		],
+		}],
 		"SceneGroup": [{
 			"id": 2,
 			"top": 1,
@@ -41,8 +40,7 @@
 			"left": 0,
 			"x": 1,
 			"y": 4
-		}
-		],
+		}],
 		"Control": [{
 			"ControlGroup": "2",
 			"ControlType": "variable",
@@ -253,9 +251,7 @@
 				"lang_tag": "tb_vvmachine",
 				"text": "VVMachine plug-in by Vpow<BR>Version 1.0"
 			}
-		}
-	],
-	"Conditions": []
+		}]
 	},
 	{
 		"Label": {
@@ -266,19 +262,581 @@
 		"TabType": "javascript",
 		"ScriptName": "shared.js",
 		"Function": "advanced_device"
+	},{
+		"Label": {
+			"lang_tag": "ui7_logs",
+			"text": "Logs"
+		},
+		"Position": 2,
+		"TabType": "javascript",
+		"ScriptName": "shared.js",
+		"Function": "device_logs"
+	},{
+		"Label": {
+			"lang_tag": "notifications",
+			"text": "Notifications"
+		},
+		"Position": 3,
+		"TabType": "javascript",
+		"ScriptName": "shared.js",
+		"Function": "device_notifications"
+	}
+],
+"eventList2":[{
+	"id": 1,
+	"label": {
+		"lang_tag": "indoor_temperature_goes_below",
+		"text": "Indoor temperature goes below"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"norepeat": "1",
+	"argumentList": [
+		{
+		"id": 1,
+		"dataType": "float",
+		"name": "ExtractTemperature",
+		"comparisson": "<",
+		"prefix": {
+			"lang_tag": "indoortemperaturelimit",
+			"text": "Temperature limit"
+			},
+		"suffix": {},
+		"HumanFriendlyText": {
+			"lang_tag": "indoor_temperature_is_below",
+			"text": "_DEVICE_NAME_ indoor temperature is below _ARGUMENT_VALUE_"
+			}
+		}
+	]
 	},
 	{
-			"Label": {
-				"lang_tag": "ui7_logs",
-				"text": "Logs"
+	"id": 2,
+	"label": {
+		"lang_tag": "indoor_temperature_goes_above",
+		"text": "Indoor temperature goes above"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"norepeat": "1",
+	"argumentList": [
+		{
+		"id": 1,
+		"dataType": "float",
+		"name": "ExtractTemperature",
+		"comparisson": ">",
+		"prefix": {
+			"lang_tag": "indoortemperaturelimit",
+			"text": "Temperature limit"
 			},
-			"Position": 2,
-			"TabType": "javascript",
-			"ScriptName": "shared.js",
-			"Function": "device_logs"
+		"suffix": {},
+		"HumanFriendlyText": {
+			"lang_tag": "indoor_temperature_is_below",
+			"text": "_DEVICE_NAME_ indoor temperature is above _ARGUMENT_VALUE_"
+			}
 		}
-	],
-	"device_type": "urn:schemas-vpow-com:device:VVMachine:1"
+	]
+	},
+	{
+	"id": 3,
+	"label": {
+		"lang_tag": "exhaust_temperature_goes_below",
+		"text": "Exhaust temperature goes below"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"norepeat": "1",
+	"argumentList": [
+		{
+		"id": 1,
+		"dataType": "float",
+		"name": "ExhaustTemperature",
+		"comparisson": "<",
+		"prefix": {
+			"lang_tag": "exhausttemperaturelimit",
+			"text": "Temperature limit"
+			},
+		"suffix": {},
+		"HumanFriendlyText": {
+			"lang_tag": "exhaust_temperature_is_below",
+			"text": "_DEVICE_NAME_ exhaust temperature is below _ARGUMENT_VALUE_"
+			}
+		}
+	]
+	},
+	{
+	"id": 4,
+	"label": {
+		"lang_tag": "exhaust_temperature_goes_above",
+		"text": "Exhaust temperature goes above"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"norepeat": "1",
+	"argumentList": [
+		{
+		"id": 1,
+		"dataType": "float",
+		"name": "ExhaustTemperature",
+		"comparisson": ">",
+		"prefix": {
+			"lang_tag": "exhausttemperaturelimit",
+			"text": "Temperature limit"
+			},
+		"suffix": {},
+		"HumanFriendlyText": {
+			"lang_tag": "exhaust_temperature_is_below",
+			"text": "_DEVICE_NAME_ exhaust temperature is above _ARGUMENT_VALUE_"
+			}
+		}
+	]
+	},
+	{
+	"id": 5,
+	"label": {
+		"lang_tag": "outdoor_temperature_goes_below",
+		"text": "Outdoor temperature goes below"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"norepeat": "1",
+	"argumentList": [
+		{
+		"id": 1,
+		"dataType": "float",
+		"name": "OutdoorTemperature",
+		"comparisson": "<",
+		"prefix": {
+			"lang_tag": "outdoortemperaturelimit",
+			"text": "Temperature limit"
+			},
+		"suffix": {},
+		"HumanFriendlyText": {
+			"lang_tag": "outdoor_temperature_is_below",
+			"text": "_DEVICE_NAME_ outdoor temperature is below _ARGUMENT_VALUE_"
+			}
+		}
+	]
+	},
+	{
+	"id": 6,
+	"label": {
+		"lang_tag": "outdoor_temperature_goes_above",
+		"text": "Outdoor temperature goes above"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"norepeat": "1",
+	"argumentList": [
+		{
+		"id": 1,
+		"dataType": "float",
+		"name": "OutdoorTemperature",
+		"comparisson": ">",
+		"prefix": {
+			"lang_tag": "outdoortemperaturelimit",
+			"text": "Temperature limit"
+			},
+		"suffix": {},
+		"HumanFriendlyText": {
+			"lang_tag": "outdoor_temperature_is_below",
+			"text": "_DEVICE_NAME_ outdoor temperature is above _ARGUMENT_VALUE_"
+			}
+		}
+	]
+	},
+	{
+	"id": 7,
+	"label": {
+		"lang_tag": "supply_temperature_goes_below",
+		"text": "Supply temperature goes below"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"norepeat": "1",
+	"argumentList": [
+		{
+		"id": 1,
+		"dataType": "float",
+		"name": "SupplyTemperature",
+		"comparisson": "<",
+		"prefix": {
+			"lang_tag": "supplytemperaturelimit",
+			"text": "Temperature limit"
+			},
+		"suffix": {},
+		"HumanFriendlyText": {
+			"lang_tag": "supply_temperature_is_below",
+			"text": "_DEVICE_NAME_ supply temperature is below _ARGUMENT_VALUE_"
+			}
+		}
+	]
+	},
+	{
+	"id": 8,
+	"label": {
+		"lang_tag": "supply_temperature_goes_above",
+		"text": "Supply temperature goes above"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"norepeat": "1",
+	"argumentList": [
+		{
+		"id": 1,
+		"dataType": "float",
+		"name": "SupplyTemperature",
+		"comparisson": ">",
+		"prefix": {
+			"lang_tag": "supplytemperaturelimit",
+			"text": "Temperature limit"
+			},
+		"suffix": {},
+		"HumanFriendlyText": {
+			"lang_tag": "supply_temperature_is_above",
+			"text": "_DEVICE_NAME_ supply temperature is above _ARGUMENT_VALUE_"
+			}
+		}
+	]
+	},
+	{
+	"id": 9,
+	"label": {
+		"lang_tag": "fanspeed_goes_below",
+		"text": "Fan speed goes below"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"norepeat": "1",
+	"argumentList": [
+		{
+		"id": 1,
+		"dataType": "int",
+		"name": "FanSpeed",
+		"comparisson": "<",
+		"prefix": {
+			"lang_tag": "fanspeedlimit",
+			"text": "Speed limit"
+			},
+		"suffix": {},
+		"HumanFriendlyText": {
+			"lang_tag": "fanspeed_is_below",
+			"text": "_DEVICE_NAME_ fan speed is below _ARGUMENT_VALUE_"
+			}
+		}
+	]
+	},
+	{
+	"id": 10,
+	"label": {
+		"lang_tag": "fanspeed_goes_above",
+		"text": "Fan speed goes above"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"norepeat": "1",
+	"argumentList": [
+		{
+		"id": 1,
+		"dataType": "int",
+		"name": "FanSpeed",
+		"comparisson": ">",
+		"prefix": {
+			"lang_tag": "fanspeedlimit",
+			"text": "Speed limit"
+			},
+		"suffix": {},
+		"HumanFriendlyText": {
+			"lang_tag": "fanspeed_is_above",
+			"text": "_DEVICE_NAME_ fan speed is above _ARGUMENT_VALUE_"
+			}
+		}
+	]
+	},
+	{
+	"id": 11,
+	"label": {
+		"lang_tag": "humidity_goes_below",
+		"text": "Humidity goes below"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"norepeat": "1",
+	"argumentList": [
+		{
+		"id": 1,
+		"dataType": "int",
+		"name": "Humidity",
+		"comparisson": "<",
+		"prefix": {
+			"lang_tag": "humiditylimit",
+			"text": "Humidity limit"
+			},
+		"suffix": {},
+		"HumanFriendlyText": {
+			"lang_tag": "humidity_is_below",
+			"text": "_DEVICE_NAME_ humidity is below _ARGUMENT_VALUE_"
+			}
+		}
+	]
+	},
+	{
+	"id": 12,
+	"label": {
+		"lang_tag": "humidity_goes_above",
+		"text": "Humidity goes above"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"norepeat": "1",
+	"argumentList": [
+		{
+		"id": 1,
+		"dataType": "int",
+		"name": "Humidity",
+		"comparisson": ">",
+		"prefix": {
+			"lang_tag": "humiditylimit",
+			"text": "Humidity limit"
+			},
+		"suffix": {},
+		"HumanFriendlyText": {
+			"lang_tag": "humidity_is_above",
+			"text": "_DEVICE_NAME_ humidity is above _ARGUMENT_VALUE_"
+			}
+		}
+	]
+	},
+	{
+	"id": 13,
+	"label": {
+		"lang_tag": "profile_changes_to",
+		"text": "Profile changes to"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"argumentList": [{
+		"id": 1,
+		"dataType": "string",
+		"norepeat": "1",
+		"defaultValue": "",
+		"allowedValueList": [
+		{
+			"value":"Home",
+			"HumanFriendlyText": {
+				"lang_tag": "home",
+				"text": "_DEVICE_NAME_ profile is Home"
+			}
+		},
+		{
+			"value":"Away",
+			"HumanFriendlyText": {
+			"lang_tag": "away",
+			"text": "_DEVICE_NAME_ profile is Away"
+			}
+		},
+		{
+			"value":"Boost",
+			"HumanFriendlyText": {
+			"lang_tag": "boost",
+			"text": "_DEVICE_NAME_ profile is Boost"
+			}
+		},
+		{
+			"value":"Fireplace",
+			"HumanFriendlyText": {
+			"lang_tag": "fireplace",
+			"text": "_DEVICE_NAME_ profile is Fireplace"
+			}
+		}
+		],
+		"name": "ModeStatus",
+		"comparisson": "=",
+		"prefix": {
+			"lang_tag": "profile",
+			"text": "Profile"
+		},
+		"suffix": {},
+	}]
+	},
+	{
+	"id": 14,
+	"label": {
+		"lang_tag": "profile_isnot",
+		"text": "Profile is not"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"argumentList": [{
+		"id": 1,
+		"dataType": "string",
+		"norepeat": "1",
+		"defaultValue": "",
+		"allowedValueList": [
+		{
+			"value":"Home",
+			"HumanFriendlyText": {
+				"lang_tag": "home",
+				"text": "_DEVICE_NAME_ profile is not Home"
+			}
+		},
+		{
+			"value":"Away",
+			"HumanFriendlyText": {
+			"lang_tag": "away",
+			"text": "_DEVICE_NAME_ profile is not Away"
+			}
+		},
+		{
+			"value":"Boost",
+			"HumanFriendlyText": {
+			"lang_tag": "boost",
+			"text": "_DEVICE_NAME_ profile is not Boost"
+			}
+		},
+		{
+			"value":"Fireplace",
+			"HumanFriendlyText": {
+			"lang_tag": "fireplace",
+			"text": "_DEVICE_NAME_ profile is not Fireplace"
+			}
+		}
+		],
+		"name": "ModeStatus",
+		"comparisson": "~",
+		"prefix": {
+			"lang_tag": "profile",
+			"text": "Profile"
+		},
+		"suffix": {},
+	}]
+	},
+	{
+	"id": 15,
+	"label": {
+		"lang_tag": "cellstate_changes_to",
+		"text": "Cell state changes to"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"argumentList": [{
+		"id": 1,
+		"dataType": "int",
+		"norepeat": "1",
+		"defaultValue": "",
+		"allowedValueList": [
+		{
+			"value":0,
+			"HumanFriendlyText": {
+				"lang_tag": "heatrecovery",
+				"text": "_DEVICE_NAME_ cell state is Heat recovery"
+			}
+		},
+		{
+			"value":1,
+			"HumanFriendlyText": {
+			"lang_tag": "coolrecovery",
+			"text": "_DEVICE_NAME_ cell state is Cool recovery"
+			}
+		},
+		{
+			"value":3,
+			"HumanFriendlyText": {
+			"lang_tag": "bypass",
+			"text": "_DEVICE_NAME_ cell state is Bypass"
+			}
+		},
+		{
+			"value":4,
+			"HumanFriendlyText": {
+			"lang_tag": "defrost",
+			"text": "_DEVICE_NAME_ cell state is Defrost"
+			}
+		}
+		],
+		"name": "CellState",
+		"comparisson": "=",
+		"prefix": {
+			"lang_tag": "cellstate",
+			"text": "Cell state"
+		},
+		"suffix": {},
+	}]
+	},
+	{
+	"id": 16,
+	"label": {
+		"lang_tag": "cellstate_isnot",
+		"text": "Cell state is not"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"argumentList": [{
+		"id": 1,
+		"dataType": "int",
+		"norepeat": "1",
+		"defaultValue": "",
+		"allowedValueList": [
+		{
+			"value":0,
+			"HumanFriendlyText": {
+				"lang_tag": "heatrecovery",
+				"text": "_DEVICE_NAME_ cell state is not Heat recovery"
+			}
+		},
+		{
+			"value":1,
+			"HumanFriendlyText": {
+			"lang_tag": "coolrecovery",
+			"text": "_DEVICE_NAME_ cell state is not Cool recovery"
+			}
+		},
+		{
+			"value":3,
+			"HumanFriendlyText": {
+			"lang_tag": "bypass",
+			"text": "_DEVICE_NAME_ cell state is not Bypass"
+			}
+		},
+		{
+			"value":4,
+			"HumanFriendlyText": {
+			"lang_tag": "defrost",
+			"text": "_DEVICE_NAME_ cell state is not Defrost"
+			}
+		}
+		],
+		"name": "CellState",
+		"comparisson": "~",
+		"prefix": {
+			"lang_tag": "cellstate",
+			"text": "Cell state"
+		},
+		"suffix": {},
+	}]
+	},
+	{
+	"id": 17,
+	"label": {
+		"lang_tag": "connection",
+		"text": "Connection state changes to"
+	},
+	"serviceId": "urn:vpow-com:serviceId:VVMachine1",
+	"argumentList": [{
+		"id": 1,
+		"dataType": "int",
+		"norepeat": "1",
+		"defaultValue": "",
+		"allowedValueList": [
+		{
+			"value":0,
+			"HumanFriendlyText": {
+				"lang_tag": "notconnected",
+				"text": "_DEVICE_NAME_ is not connected"
+			}
+		},
+		{
+			"value":1,
+			"HumanFriendlyText": {
+			"lang_tag": "connected",
+			"text": "_DEVICE_NAME_ is connected"
+			}
+		}
+		],
+		"name": "Connected",
+		"comparisson": "=",
+		"prefix": {
+			"lang_tag": "connection",
+			"text": "Connection status"
+		},
+		"suffix": {},
+	}]
+	}
+],
+"device_type": "urn:schemas-vpow-com:device:VVMachine:1"
 }
 
 
