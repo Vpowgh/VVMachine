@@ -133,7 +133,7 @@
 				"Width": 75,
 				"Height": 25,
 				"Service": "urn:vpow-com:serviceId:VVMachine1",
-				"Variable": "ModeStatus",
+				"Variable": "Profile",
 				"Value": "Home"
 			},
 			"Command": {
@@ -164,7 +164,7 @@
 				"Width": 75,
 				"Height": 25,
 				"Service": "urn:vpow-com:serviceId:VVMachine1",
-				"Variable": "ModeStatus",
+				"Variable": "Profile",
 				"Value": "Away"
 			},
 			"Command": {
@@ -195,7 +195,7 @@
 				"Width": 75,
 				"Height": 25,
 				"Service": "urn:vpow-com:serviceId:VVMachine1",
-				"Variable": "ModeStatus",
+				"Variable": "Profile",
 				"Value": "Boost"
 			},
 			"Command": {
@@ -226,7 +226,7 @@
 				"Width": 75,
 				"Height": 25,
 				"Service": "urn:vpow-com:serviceId:VVMachine1",
-				"Variable": "ModeStatus",
+				"Variable": "Profile",
 				"Value": "Fireplace"
 			},
 			"Command": {
@@ -636,7 +636,7 @@
 			}
 		}
 		],
-		"name": "ModeStatus",
+		"name": "Profile",
 		"comparisson": "=",
 		"prefix": {
 			"lang_tag": "profile",
@@ -687,7 +687,7 @@
 			}
 		}
 		],
-		"name": "ModeStatus",
+		"name": "Profile",
 		"comparisson": "~",
 		"prefix": {
 			"lang_tag": "profile",
