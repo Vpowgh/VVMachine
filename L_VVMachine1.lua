@@ -36,8 +36,10 @@ local Exhaust				= {value=0, name='ExhaustTemperature', offset=67, valuetype=vt.
 local Outdoor				= {value=0, name='OutdoorTemperature', offset=68, valuetype=vt.TEMPC}
 local Supply				= {value=0, name='SupplyTemperature', offset=70, valuetype=vt.TEMPC}
 local Fanspeed				= {value=0, name='FanSpeed', offset=65, valuetype=vt.INT}
+local SupplyFanspeed		= {value=0, name='Humidity', offset=74, valuetype=vt.INT}
 local Humidity				= {value=0, name='Humidity', offset=75, valuetype=vt.INT}
-local Profile				= {value=0, name='Profile', offset=108, valuetype=vt.INT}
+local State					= {value=0, name='State', offset=108, valuetype=vt.INT}
+local Mode					= {value=0, name='Mode', offset=109, valuetype=vt.INT}
 local CellState				= {value=0, name='CellState', offset=115, valuetype=vt.INT}
 
 local BoostTimer			= {value=0, name='BoostTimer', offset=111, valuetype=vt.INT}
@@ -52,8 +54,9 @@ local ExtraTimer			= {value=0, name='ExtraTimer', offset=113, valuetype=vt.INT}
 local ExtraTime				= {value=0, name='ExtraTime', offset=198, valuetype=vt.INT}
 local ExtraTimerEnabled		= {value=0, name='ExtraTimerEnabled', offset=271, valuetype=vt.INT}
 
+local Fault					= {value=0, name='Fault', offset=120, valuetype=vt.INT}
 
-local Vallox_signals = {Extract, Exhaust, Outdoor, Supply, Fanspeed, Humidity, Profile, BoostTimer, BoostTime, BoostTimerEnabled, FireplaceTimer, FireplaceTime, FireplaceTimerEnabled, ExtraTimer, ExtraTime, ExtraTimerEnabled, CellState}
+local Vallox_signals = {Extract, Exhaust, Outdoor, Supply, Fanspeed, SupplyFanspeed, Humidity, State, Mode, BoostTimer, BoostTime, BoostTimerEnabled, FireplaceTimer, FireplaceTime, FireplaceTimerEnabled, ExtraTimer, ExtraTime, ExtraTimerEnabled, CellState, Fault}
 
 ------------------------------------------------
 -- Debug --
@@ -104,7 +107,7 @@ local function VVM_wsconnect(host, port)
 	end
 
 	socketstate = sv.OPEN
-	sock:settimeout(30)
+	sock:settimeout(7,'t')
 
 	local _,err = sock:send(wsheader)
 	if err then
@@ -307,22 +310,41 @@ local function VVM_ReadMetrics()
 					st = "Fireplace"
 				elseif BoostTimer.value > 0 then
 					st = "Boost"
-				elseif Profile.value == 0 then
+				elseif State.value == 0 then
 					st = "Home"
-				elseif Profile.value == 1 then
+				elseif State.value == 1 then
 					st = "Away"
 				end
 				if st ~=nil then
-					setVar("ModeStatus",st, dev, MYSID)
+					setVar("Profile",st, dev, MYSID)
 				end
 
+				setVar("Fault",Fault.value, dev, MYSID)
+
 				--UI update
-				--Vera UI is truncating spaces, so in order to keep string lengths as wanted spaces are replaced with empty chars. max. temperature string length is 5 (-xx.x)
-				local row2,_ = string.gsub(string.format("% 5.1f°C % 5.1f°C  %3d%%", Extract.value, Exhaust.value, Fanspeed.value),' ',' ')
-				row2 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">" .. row2 .. "</span>"
-				local row3,_ = string.gsub(string.format("% 5.1f°C % 5.1f°C  %3d%%", Supply.value, Outdoor.value, Humidity.value),' ',' ')
-				row3 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">" .. row3 .. "</span>"
-				local row5 = string.format("<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">  %s</span>",CellStatusNames[CellState.value])
+				local row2
+				local row3
+				local row5
+				
+				if Mode.value == 0 then --mode is normal
+					--Vera UI is truncating spaces, so in order to keep string lengths as wanted spaces are replaced with empty chars. max. temperature string length is 5 (-xx.x)
+					row2,_ = string.gsub(string.format("% 5.1f°C % 5.1f°C  %3d%%", Extract.value, Exhaust.value, Fanspeed.value),' ',' ')
+					row2 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">" .. row2 .. "</span>"
+					row3,_ = string.gsub(string.format("% 5.1f°C % 5.1f°C  %3d%%", Supply.value, Outdoor.value, Humidity.value),' ',' ')
+					row3 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">" .. row3 .. "</span>"
+
+					if Fault.value == 1 then
+						st = 'FAULTED'
+					else
+						st = CellStatusNames[CellState.value]
+					end
+				else --mode is 'off' or better standby, values are still measured and reported
+					row2 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">------------------</span>"
+					row3 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">------------------</span>"
+					st = 'STANDBY'
+				end
+
+				row5 = string.format("<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">  %s</span>",st)
 
 				setVar("UI_row2", row2, pluginDevice, MYSID)
 				setVar("UI_row3", row3, pluginDevice, MYSID)
@@ -340,13 +362,13 @@ local function VVM_ReadMetrics()
 		setVar("UI_row2","<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\"> </span>", pluginDevice, MYSID)
 		setVar("UI_row3","<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\"> </span>", pluginDevice, MYSID)
 		setVar("UI_row5","", pluginDevice, MYSID)
-		setVar("ModeStatus","none", dev, MYSID)
+		setVar("Profile","none", dev, MYSID) --deselect all buttons
 	end
 end
 
 
 local function VVM_SetProfile(p)
-	setVar("ModeStatus",p, dev, MYSID)
+	setVar("Profile",p, dev, MYSID)
 
 	local a, b = VVM_wsconnect(VVM_ip,80)
 
@@ -456,6 +478,12 @@ function actionSetProfileFireplace(dev)
 	end
 end
 
+function actionSetOnOff(dev)
+	if isconnected then
+		
+		log("set OnOff")
+	end
+end
 
 -- END_OF_FILE
 
