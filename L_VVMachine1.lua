@@ -343,7 +343,6 @@ local function VVM_ReadMetrics()
 					row3 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">------------------</span>"
 					st = 'STANDBY'
 				end
-
 				row5 = string.format("<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">  %s</span>",st)
 
 				setVar("UI_row2", row2, pluginDevice, MYSID)

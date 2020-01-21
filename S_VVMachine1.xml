@@ -11,9 +11,9 @@ Developed by Vpow 2019
 	</specVersion>
 	<serviceStateTable>
 		<stateVariable sendEvents="yes">
-			<name>ModeStatus</name>
+			<name>Profile</name>
 			<dataType>string</dataType>
-			<shortCode>modestatus</shortCode>
+			<shortCode>profile</shortCode>
 		</stateVariable>
 		<stateVariable sendEvents="yes">
 			<name>Connected</name>
