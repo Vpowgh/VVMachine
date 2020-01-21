@@ -338,13 +338,12 @@ local function VVM_ReadMetrics()
 					else
 						st = CellStatusNames[CellState.value]
 					end
-					row5 = string.format("<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">  %s</span>",st)
 				else --mode is 'off' or better standby, values are still measured and reported
 					row2 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">------------------</span>"
 					row3 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">------------------</span>"
 					st = 'STANDBY'
-					--row5 = string.format("<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">  %s</span>",st)
 				end
+				row5 = string.format("<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">  %s</span>",st)
 
 				setVar("UI_row2", row2, pluginDevice, MYSID)
 				setVar("UI_row3", row3, pluginDevice, MYSID)
