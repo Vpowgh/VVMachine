@@ -1,7 +1,7 @@
 --[[
 L_VVMachine1.lua
 Vera plug-in for Vallox MV ventilation machines 
-Developed by Vpow 2019
+Developed by Vpow 2019-
 --]]
 
 module("L_VVMachine1", package.seeall)
@@ -18,6 +18,9 @@ local isconnected = false
 local pluginDevice = nil
 local wsheader = ""
 
+local sv_addr = 0
+local sv_val = 0
+
 local CellStatusNames = { [0] = 'HEAT RECOVERY', [1] = 'COOL RECOVERY', [2] = 'BYPASS', [3] = 'DEFROST'}
 
 --conversion functions for signals
@@ -31,16 +34,18 @@ local vtaction = {
 }
 
 --selected signals from Vallox machine, offset is location in table received by reading metrics
+local Fanspeed				= {value=0, name='FanSpeed', offset=65, valuetype=vt.INT}
 local Extract				= {value=0, name='ExtractTemperature', offset=66, valuetype=vt.TEMPC}
 local Exhaust				= {value=0, name='ExhaustTemperature', offset=67, valuetype=vt.TEMPC}
 local Outdoor				= {value=0, name='OutdoorTemperature', offset=68, valuetype=vt.TEMPC}
 local Supply				= {value=0, name='SupplyTemperature', offset=70, valuetype=vt.TEMPC}
-local Fanspeed				= {value=0, name='FanSpeed', offset=65, valuetype=vt.INT}
-local SupplyFanspeed		= {value=0, name='Humidity', offset=74, valuetype=vt.INT}
+local ExtractFanspeed		= {value=0, name='ExtractFanspeed', offset=73, valuetype=vt.INT}
+local SupplyFanspeed		= {value=0, name='SupplyFanspeed', offset=74, valuetype=vt.INT}
 local Humidity				= {value=0, name='Humidity', offset=75, valuetype=vt.INT}
 local State					= {value=0, name='State', offset=108, valuetype=vt.INT}
 local Mode					= {value=0, name='Mode', offset=109, valuetype=vt.INT}
 local CellState				= {value=0, name='CellState', offset=115, valuetype=vt.INT}
+local Fault					= {value=0, name='Fault', offset=120, valuetype=vt.INT}
 
 local BoostTimer			= {value=0, name='BoostTimer', offset=111, valuetype=vt.INT}
 local BoostTime				= {value=0, name='BoostTime', offset=247, valuetype=vt.INT}
@@ -51,12 +56,14 @@ local FireplaceTime			= {value=0, name='FireplaceTime', offset=248, valuetype=vt
 local FireplaceTimerEnabled	= {value=0, name='FireplaceTimerEnabled', offset=266, valuetype=vt.INT}
 
 local ExtraTimer			= {value=0, name='ExtraTimer', offset=113, valuetype=vt.INT}
-local ExtraTime				= {value=0, name='ExtraTime', offset=198, valuetype=vt.INT}
+
+local ExtraAirTempTarget	= {value=0, name='ExtraAirTempTarget', offset=196, valuetype=vt.TEMPC}
+local ExtraExtractFan		= {value=0, name='ExtraExtractFan', offset=197, valuetype=vt.INT}
+local ExtraSupplyFan		= {value=0, name='ExtraSupplyFan', offset=198, valuetype=vt.INT}
+local ExtraTime				= {value=0, name='ExtraTime', offset=199, valuetype=vt.INT}
 local ExtraTimerEnabled		= {value=0, name='ExtraTimerEnabled', offset=271, valuetype=vt.INT}
 
-local Fault					= {value=0, name='Fault', offset=120, valuetype=vt.INT}
-
-local Vallox_signals = {Extract, Exhaust, Outdoor, Supply, Fanspeed, SupplyFanspeed, Humidity, State, Mode, BoostTimer, BoostTime, BoostTimerEnabled, FireplaceTimer, FireplaceTime, FireplaceTimerEnabled, ExtraTimer, ExtraTime, ExtraTimerEnabled, CellState, Fault}
+local Vallox_signals = {Extract, Exhaust, Outdoor, Supply, Fanspeed, ExtractFanspeed, SupplyFanspeed, Humidity, State, Mode, BoostTimer, BoostTime, BoostTimerEnabled, FireplaceTimer, FireplaceTime, FireplaceTimerEnabled, ExtraTimer, ExtraAirTempTarget, ExtraExtractFan, ExtraSupplyFan, ExtraTime, ExtraTimerEnabled, CellState, Fault}
 
 ------------------------------------------------
 -- Debug --
@@ -186,13 +193,13 @@ local function encode(data,opcode)
 	return table.concat(chunks)
 end
 
-local function checksum_16(data)
+function checksum_16(data)
 	local c = 0
 
-	for i=1, (#data-1)/2 do
+	for i=1, #data/2 do
 		local j = i*2
 		local x = tonumber(string.byte(data:sub(j,j)))
-		j = i*2-1
+		j = j-1
 		local y = tonumber(string.byte(data:sub(j,j)))
 		c = c + x*256 + y
 	end
@@ -231,6 +238,12 @@ local function VVM_wssend(cmd)
 		data = string.char(0x08, 0x00, 0xf9, 0x00, 0x04, 0x12, 0x00, 0x00, 0x05, 0x12)
 		data = data .. string.char(bit.band(FireplaceTime.value,0xff),bit.rshift(FireplaceTime.value,8))
 		data = data .. string.char(0x06, 0x12, 0x00, 0x00)
+		local csum = checksum_16(data)
+		data = data .. string.char(bit.band(csum,0xff),bit.rshift(csum,8))
+	elseif cmd == "setvariable" then
+		data = string.char(0x04, 0x00, 0xf9, 0x00)
+		data = data .. string.char(bit.band(sv_addr,0xff),bit.rshift(sv_addr,8))
+		data = data .. string.char(bit.band(sv_val,0xff),bit.rshift(sv_val,8))
 		local csum = checksum_16(data)
 		data = data .. string.char(bit.band(csum,0xff),bit.rshift(csum,8))
 	else
@@ -287,7 +300,6 @@ end
 
 local function VVM_ReadMetrics()
 	local a, b = VVM_wsconnect(VVM_ip,80)
-	isconnected = false
 
 	if a ~= nil then
 		local a, b = VVM_wssend("metrics")
@@ -351,6 +363,7 @@ local function VVM_ReadMetrics()
 
 				isconnected = true
 			else
+				isconnected = false
 				log("receiving metrics failed")
 			end
 		end
@@ -378,6 +391,22 @@ local function VVM_SetProfile(p)
 		end
 	end
 end
+
+local function VVM_SetVariable(addr,val)
+	local a, b = VVM_wsconnect(VVM_ip,80)
+
+	sv_addr = addr
+	sv_val = val
+
+	if a ~= nil then
+		local a, b = VVM_wssend("setvariable")
+		if a ~= nil then
+			VVM_wsreceive()
+		end
+	end
+end
+
+
 
 --must be global
 function updateUserParams(dev, ser, var, vold, vnew)
@@ -409,7 +438,6 @@ function VVM_start(dev)
 
 	--in case user changes parameters, have to update internal variables
 	luup.variable_watch("pluginUpdateParams",MYSID,"ValloxIP", pluginDevice)
-	luup.variable_watch("pluginUpdateParams",MYSID,"ValloxPollRate", pluginDevice)
 
 	--check internal variables, create them if not existing
 	for i=1, #Vallox_signals do
@@ -481,6 +509,16 @@ function actionSetOnOff(dev)
 	if isconnected then
 		
 		log("set OnOff")
+	end
+end
+
+function actionSetVVMVariable(val, dev)
+	if isconnected then
+		log("set Variable")
+		log(string.format("SV: %s", val))
+		--for testing only now..
+		VVM_SetVariable(20493,28315)
+
 	end
 end
 

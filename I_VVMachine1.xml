@@ -49,5 +49,13 @@ Developed by Vpow 2019
 				return true
 			</run>
 		</action>
+		<action>
+			<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
+			<name>SetVVMVariable</name>
+			<run>
+				pluginModule.actionSetVVMVariable(val, lul_device)
+				return true
+			</run>
+		</action>
 	</actionList>
 </implementation>
