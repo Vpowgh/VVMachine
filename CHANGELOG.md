@@ -2,6 +2,8 @@
 
 ## Version 1.2 (released 2020-xx-xx)
 * Add function to write to any register.
+* Add function to activate programmable Extra profile.
+* Add function to switch unit on and off.
 
 ## Version 1.1 (released 2020-01-21)
 * Add Fault variable and show FAULTED in UI if the ventilation is in fault state.

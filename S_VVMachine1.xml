@@ -17,7 +17,7 @@ Developed by Vpow 2019
 		</stateVariable>
 		<stateVariable sendEvents="yes">
 			<name>Connected</name>
-			<dataType>string</dataType>
+			<dataType>boolean</dataType>
 			<shortCode>connected</shortCode>
 		</stateVariable>
 		<stateVariable sendEvents="yes">
@@ -55,10 +55,13 @@ Developed by Vpow 2019
 			<dataType>int</dataType>
 			<shortCode>cellstate</shortCode>
 		</stateVariable>
-		<stateVariable sendEvents="yes">
-			<name>RegisterAddress</name>
-			<dataType>int</dataType>
-			<shortCode>registeraddress</shortCode>
+		<stateVariable sendEvents="no">
+			<name>A_ARG_TYPE_ui2</name>
+			<dataType>ui2</dataType>
+		</stateVariable>
+		<stateVariable sendEvents="no">
+			<name>A_ARG_TYPE_boolean</name>
+			<dataType>boolean</dataType>
 		</stateVariable>
 	</serviceStateTable>
 	<actionList>
@@ -79,12 +82,31 @@ Developed by Vpow 2019
 			<argumentList></argumentList>
 		</action>
 		<action>
-			<name>SetVVMVariable</name>
+			<name>SetProfileExtra</name>
+			<argumentList></argumentList>
+		</action>
+		<action>
+			<name>SetVariable</name>
 			<argumentList>
 			<argument>
-				<name>val</name>
-				<direction>out</direction>
-				<relatedStateVariable>RegisterAddress</relatedStateVariable>
+				<name>Address</name>
+				<direction>in</direction>
+				<relatedStateVariable>A_ARG_TYPE_ui2</relatedStateVariable>
+			</argument>
+			<argument>
+				<name>Value</name>
+				<direction>in</direction>
+				<relatedStateVariable>A_ARG_TYPE_ui2</relatedStateVariable>
+			</argument>
+			</argumentList>
+		</action>
+		<action>
+			<name>SetOnOff</name>
+			<argumentList>
+			<argument>
+				<name>OnOff</name>
+				<direction>in</direction>
+				<relatedStateVariable>A_ARG_TYPE_boolean</relatedStateVariable>
 			</argument>
 			</argumentList>
 		</action>

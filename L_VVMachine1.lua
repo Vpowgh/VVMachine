@@ -223,32 +223,30 @@ local function VVM_wssend(cmd)
 
 	local data
 	if cmd == "metrics" then
-		data = string.char(0x03, 0x00, 0xf6, 0x00, 0x00, 0x00, 0xf9, 0x00)
+		data = string.char(0x03, 0x00, 0xf6, 0x00, 0x00, 0x00)
 	elseif cmd == "Home" then
-		data = string.char(0x0a, 0x00, 0xf9, 0x00, 0x01, 0x12, 0x00, 0x00, 0x04, 0x12, 0x00, 0x00, 0x05, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00, 0x13, 0x49)
+		data = string.char(0x0a, 0x00, 0xf9, 0x00, 0x01, 0x12, 0x00, 0x00, 0x04, 0x12, 0x00, 0x00, 0x05, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00)
 	elseif cmd == "Away" then
-		data = string.char(0x0a, 0x00, 0xf9, 0x00, 0x01, 0x12, 0x01, 0x00, 0x04, 0x12, 0x00, 0x00, 0x05, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00, 0x14, 0x49)
+		data = string.char(0x0a, 0x00, 0xf9, 0x00, 0x01, 0x12, 0x01, 0x00, 0x04, 0x12, 0x00, 0x00, 0x05, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00)
 	elseif cmd == "Boost" then
-		data = string.char(0x08, 0x00, 0xf9, 0x00, 0x04, 0x12)
+		data = string.char(0x08, 0x00, 0xf9, 0x00, 0x05, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00, 0x04, 0x12)
 		data = data .. string.char(bit.band(BoostTime.value,0xff),bit.rshift(BoostTime.value,8))
-		data = data .. string.char(0x05, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00)
-		local csum = checksum_16(data)
-		data = data .. string.char(bit.band(csum,0xff),bit.rshift(csum,8))
 	elseif cmd == "Fireplace" then
-		data = string.char(0x08, 0x00, 0xf9, 0x00, 0x04, 0x12, 0x00, 0x00, 0x05, 0x12)
+		data = string.char(0x08, 0x00, 0xf9, 0x00, 0x04, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00, 0x05, 0x12)
 		data = data .. string.char(bit.band(FireplaceTime.value,0xff),bit.rshift(FireplaceTime.value,8))
-		data = data .. string.char(0x06, 0x12, 0x00, 0x00)
-		local csum = checksum_16(data)
-		data = data .. string.char(bit.band(csum,0xff),bit.rshift(csum,8))
+	elseif cmd == "Extra" then
+		data = string.char(0x08, 0x00, 0xf9, 0x00, 0x04, 0x12, 0x00, 0x00, 0x05, 0x12, 0x00, 0x00, 0x06, 0x12)
+		data = data .. string.char(bit.band(ExtraTime.value,0xff),bit.rshift(ExtraTime.value,8))
 	elseif cmd == "setvariable" then
 		data = string.char(0x04, 0x00, 0xf9, 0x00)
 		data = data .. string.char(bit.band(sv_addr,0xff),bit.rshift(sv_addr,8))
 		data = data .. string.char(bit.band(sv_val,0xff),bit.rshift(sv_val,8))
-		local csum = checksum_16(data)
-		data = data .. string.char(bit.band(csum,0xff),bit.rshift(csum,8))
 	else
 		return nil,'no command'
 	end
+
+	local csum = checksum_16(data)
+	data = data .. string.char(bit.band(csum,0xff),bit.rshift(csum,8))
 
 	local encoded = encode(data,2)
 
@@ -380,7 +378,7 @@ end
 
 
 local function VVM_SetProfile(p)
-	setVar("Profile",p, dev, MYSID)
+	setVar("Profile", p, dev, MYSID)
 
 	local a, b = VVM_wsconnect(VVM_ip,80)
 
@@ -400,6 +398,7 @@ local function VVM_SetVariable(addr,val)
 
 	if a ~= nil then
 		local a, b = VVM_wssend("setvariable")
+		log(string.format("Set Variable: %d %d", addr,val))
 		if a ~= nil then
 			VVM_wsreceive()
 		end
@@ -505,20 +504,30 @@ function actionSetProfileFireplace(dev)
 	end
 end
 
-function actionSetOnOff(dev)
+function actionSetProfileExtra(dev)
 	if isconnected then
-		
+		VVM_SetProfile("Extra")
+		log("set Extra")
+	end
+end
+
+function actionSetOnOff(onoff, dev)
+	if isconnected then
+		local x
+		if onoff == "1" then
+			x = 0
+		else
+			x = 5
+		end
+
+		VVM_SetVariable(4610,x)
 		log("set OnOff")
 	end
 end
 
-function actionSetVVMVariable(val, dev)
+function actionSetVariable(addr, val, dev)
 	if isconnected then
-		log("set Variable")
-		log(string.format("SV: %s", val))
-		--for testing only now..
-		VVM_SetVariable(20493,28315)
-
+		VVM_SetVariable(addr,val)
 	end
 end
 
