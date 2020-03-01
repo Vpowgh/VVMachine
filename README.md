@@ -50,12 +50,15 @@ Following actions are provided by the plugin to control ventilation unit:
 - SetProfileBoost()
 - SetProfileFireplace()
 - SetProfileExtra()
+
 Each of these actions set the operating profile for ventilation unit. Actions do not take any parameters.
 
 - SetOnOff(OnOff)
+
 Sets the ventilation unit on or off. Parameter is boolean type (1=turn unit on, 0=turn unit off).
 
 - SetVariable(Address, Value)
+
 Sets one or multiple variable(s) in the ventilation unit. Address and value parameters are string type. When setting multiple values addresses and corresponding values must be comma separated.
 Example to set one variable: SetVariable(Address="4614", Value="0")
 Example to set multiple variables: SetVariable(Address="20493,20494,20495,4614", Value="29015,40,45,65535")
