@@ -2,7 +2,7 @@
 Vallox ventilation machine plug-in for Vera home automation system. Compatible with Vallox MV series ventilation units.
 
 # Features
-Displays main temperatures (Indoor, Exhaust, Extract, Outdoor), fan speed, current humidity and heat exchanger operating state in easily readable user interface. Buttons for selecting active profile (Home, Away, Boost, Fireplace).
+Displays main temperatures (Indoor, Exhaust, Extract, Outdoor), fan speed, current humidity and heat exchanger operating state in easily readable user interface. Buttons for selecting active profile (Home, Away, Boost, Fireplace, Extra).
 
 # Installation
 - Install from Vera (Apps -> Install apps)
@@ -29,7 +29,7 @@ The user interface shows current values of following signals:
 - humidity (relative humidity %)
 - heat exchanger operating state (heat recovery, cool recovery, bypass, defrost)
 
-Next to display are four control buttons for selecting active profile: Home, Away, Boost and Fireplace.
+Next to display are five control buttons for selecting active profile: Home, Away, Boost,Fireplace and Extra.
 The buttons also reflect the state of the Vallox unit, if profile is changed from other control location the buttons status will change accordingly. Note that changing profile is not instantenous, it will take some time that command is processed and status is relayed back to plugin.
 
 If plugin cannot connect to Vallox unit, then display will not show any values, buttons do not show any profile and plugin logo is gray color. If plugin is connected normally values and profile are shown and plugin logo is blue. Note that logos are stored in external server, if your Vera is not connected to internet the logos are not shown.
@@ -52,13 +52,13 @@ Following actions are provided by the plugin to control ventilation unit:
 - SetProfileExtra()
 Each of these actions set the operating profile for ventilation unit. Actions do not take any parameters.
 
-- SetOnOff(onoff)
+- SetOnOff(OnOff)
 Sets the ventilation unit on or off. Parameter is boolean type (1=turn unit on, 0=turn unit off).
 
-- SetVariable(addr, val)
+- SetVariable(Address, Value)
 Sets one or multiple variable(s) in the ventilation unit. Address and value parameters are string type. When setting multiple values addresses and corresponding values must be comma separated.
-Example to set one variable: SetVariable("4610", "0")
-Example to set multiple variables: SetVariable("20493,20494,20495,4614", "29015,40,45,65535")
+Example to set one variable: SetVariable(Address="4614", Value="0")
+Example to set multiple variables: SetVariable(Address="20493,20494,20495,4614", Value="29015,40,45,65535")
 
 
 
