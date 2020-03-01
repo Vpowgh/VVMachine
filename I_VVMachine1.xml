@@ -49,5 +49,29 @@ Developed by Vpow 2019
 				return true
 			</run>
 		</action>
+		<action>
+			<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
+			<name>SetProfileExtra</name>
+			<run>
+				pluginModule.actionSetProfileExtra(lul_device)
+				return true
+			</run>
+		</action>
+		<action>
+			<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
+			<name>SetVariable</name>
+			<run>
+				pluginModule.actionSetVariable(lul_settings.Address, lul_settings.Value, lul_device)
+				return true
+			</run>
+		</action>
+		<action>
+			<serviceId>urn:vpow-com:serviceId:VVMachine1</serviceId>
+			<name>SetOnOff</name>
+			<run>
+				pluginModule.actionSetOnOff(lul_settings.OnOff, lul_device)
+				return true
+			</run>
+		</action>
 	</actionList>
 </implementation>
