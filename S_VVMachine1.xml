@@ -56,6 +56,10 @@ Developed by Vpow 2019
 			<shortCode>cellstate</shortCode>
 		</stateVariable>
 		<stateVariable sendEvents="no">
+			<name>A_ARG_TYPE_string</name>
+			<dataType>string</dataType>
+		</stateVariable>
+		<stateVariable sendEvents="no">
 			<name>A_ARG_TYPE_ui2</name>
 			<dataType>ui2</dataType>
 		</stateVariable>
@@ -91,12 +95,12 @@ Developed by Vpow 2019
 			<argument>
 				<name>Address</name>
 				<direction>in</direction>
-				<relatedStateVariable>A_ARG_TYPE_ui2</relatedStateVariable>
+				<relatedStateVariable>A_ARG_TYPE_string</relatedStateVariable>
 			</argument>
 			<argument>
 				<name>Value</name>
 				<direction>in</direction>
-				<relatedStateVariable>A_ARG_TYPE_ui2</relatedStateVariable>
+				<relatedStateVariable>A_ARG_TYPE_string</relatedStateVariable>
 			</argument>
 			</argumentList>
 		</action>

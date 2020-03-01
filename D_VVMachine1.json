@@ -240,6 +240,37 @@
 			},
 			"ControlCode": "VVMachine_mode_fireplace"
 		},{
+			"ControlGroup": "4",
+			"ControlType": "line_break"
+		},{
+			"ControlGroup": "4",
+			"ControlType": "button",
+			"top": "0",
+			"left": "0",
+			"Label": {
+				"lang_tag": "ui7_mode_extra",
+				"text": "Extra"
+			},
+			"Display": {
+				"Top": 120,
+				"Left": 200,
+				"Width": 75,
+				"Height": 25,
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Variable": "Profile",
+				"Value": "Extra"
+			},
+			"Command": {
+				"HumanFriendlyText": {
+					"lang_tag": "ui7_mode_extra",
+					"text": "Extra"
+				},
+				"Service": "urn:vpow-com:serviceId:VVMachine1",
+				"Action": "SetProfileExtra",
+				"Parameters": []
+			},
+			"ControlCode": "VVMachine_mode_extra"
+		},{
 			"ControlType": "label",
 			"Display": {
 				"Top": 200,
@@ -249,7 +280,7 @@
 			},
 			"Label": {
 				"lang_tag": "tb_vvmachine",
-				"text": "VVMachine plug-in by Vpow<BR>Version 1.2 BETA"
+				"text": "VVMachine plug-in by Vpow<BR>Version 1.2"
 			}
 		}]
 	},
@@ -634,6 +665,13 @@
 			"lang_tag": "fireplace",
 			"text": "_DEVICE_NAME_ profile is Fireplace"
 			}
+		},
+		{
+			"value":"Extra",
+			"HumanFriendlyText": {
+			"lang_tag": "extra",
+			"text": "_DEVICE_NAME_ profile is Extra"
+			}
 		}
 		],
 		"name": "Profile",
@@ -684,6 +722,13 @@
 			"HumanFriendlyText": {
 			"lang_tag": "fireplace",
 			"text": "_DEVICE_NAME_ profile is not Fireplace"
+			}
+		},
+		{
+			"value":"Extra",
+			"HumanFriendlyText": {
+			"lang_tag": "extra",
+			"text": "_DEVICE_NAME_ profile is not Extra"
 			}
 		}
 		],
@@ -838,6 +883,3 @@
 ],
 "device_type": "urn:schemas-vpow-com:device:VVMachine:1"
 }
-
-
-

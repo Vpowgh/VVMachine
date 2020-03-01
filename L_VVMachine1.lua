@@ -18,8 +18,7 @@ local isconnected = false
 local pluginDevice = nil
 local wsheader = ""
 
-local sv_addr = 0
-local sv_val = 0
+local sv_data = ""
 
 local CellStatusNames = { [0] = 'HEAT RECOVERY', [1] = 'COOL RECOVERY', [2] = 'BYPASS', [3] = 'DEFROST'}
 
@@ -56,7 +55,6 @@ local FireplaceTime			= {value=0, name='FireplaceTime', offset=248, valuetype=vt
 local FireplaceTimerEnabled	= {value=0, name='FireplaceTimerEnabled', offset=266, valuetype=vt.INT}
 
 local ExtraTimer			= {value=0, name='ExtraTimer', offset=113, valuetype=vt.INT}
-
 local ExtraAirTempTarget	= {value=0, name='ExtraAirTempTarget', offset=196, valuetype=vt.TEMPC}
 local ExtraExtractFan		= {value=0, name='ExtraExtractFan', offset=197, valuetype=vt.INT}
 local ExtraSupplyFan		= {value=0, name='ExtraSupplyFan', offset=198, valuetype=vt.INT}
@@ -82,7 +80,7 @@ local bool_to_number={ [true]=1, [false]=0 }
 local function setVar(name, val, dev, sid)
 	local s = luup.variable_get(sid, name, dev)
 
-	if s ~= tostring(val) then --since variable get returns string, need to convert val to string also
+	if s ~= tostring(val) then --since variable_get returns string, need to convert val to string also
 		luup.variable_set(sid, name, val, dev)
 	end
 	
@@ -225,22 +223,22 @@ local function VVM_wssend(cmd)
 	if cmd == "metrics" then
 		data = string.char(0x03, 0x00, 0xf6, 0x00, 0x00, 0x00)
 	elseif cmd == "Home" then
+	--4609 STATE -> 0, 4612 BOOST_TIMER -> 0, 4613 FIREPLACE_TIMER -> 0, 4614 EXTRA_TIMER -> 0
 		data = string.char(0x0a, 0x00, 0xf9, 0x00, 0x01, 0x12, 0x00, 0x00, 0x04, 0x12, 0x00, 0x00, 0x05, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00)
 	elseif cmd == "Away" then
+		--4609 STATE -> 1, 4612 BOOST_TIMER -> 0, 4613 FIREPLACE_TIMER -> 0, 4614 EXTRA_TIMER -> 0
 		data = string.char(0x0a, 0x00, 0xf9, 0x00, 0x01, 0x12, 0x01, 0x00, 0x04, 0x12, 0x00, 0x00, 0x05, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00)
 	elseif cmd == "Boost" then
-		data = string.char(0x08, 0x00, 0xf9, 0x00, 0x05, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00, 0x04, 0x12)
-		data = data .. string.char(bit.band(BoostTime.value,0xff),bit.rshift(BoostTime.value,8))
+		--4613 FIREPLACE_TIMER -> 0, 4614 EXTRA_TIMER -> 0, 4612 BOOST_TIMER -> BoostTime
+		data = string.char(0x08, 0x00, 0xf9, 0x00, 0x05, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00, 0x04, 0x12, bit.band(BoostTime.value,0xff), bit.rshift(BoostTime.value,8))
 	elseif cmd == "Fireplace" then
-		data = string.char(0x08, 0x00, 0xf9, 0x00, 0x04, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00, 0x05, 0x12)
-		data = data .. string.char(bit.band(FireplaceTime.value,0xff),bit.rshift(FireplaceTime.value,8))
+		--4612 BOOST_TIMER -> 0, 4614 EXTRA_TIMER -> 0, 4613 FIREPLACE_TIMER -> FireplaceTime
+		data = string.char(0x08, 0x00, 0xf9, 0x00, 0x04, 0x12, 0x00, 0x00, 0x06, 0x12, 0x00, 0x00, 0x05, 0x12, bit.band(FireplaceTime.value,0xff), bit.rshift(FireplaceTime.value,8))
 	elseif cmd == "Extra" then
-		data = string.char(0x08, 0x00, 0xf9, 0x00, 0x04, 0x12, 0x00, 0x00, 0x05, 0x12, 0x00, 0x00, 0x06, 0x12)
-		data = data .. string.char(bit.band(ExtraTime.value,0xff),bit.rshift(ExtraTime.value,8))
+		--4612 BOOST_TIMER -> 0, 4613 FIREPLACE_TIMER -> 0, 4614 EXTRA_TIMER -> ExtraTime
+		data = string.char(0x08, 0x00, 0xf9, 0x00, 0x04, 0x12, 0x00, 0x00, 0x05, 0x12, 0x00, 0x00, 0x06, 0x12, bit.band(ExtraTime.value,0xff), bit.rshift(ExtraTime.value,8))
 	elseif cmd == "setvariable" then
-		data = string.char(0x04, 0x00, 0xf9, 0x00)
-		data = data .. string.char(bit.band(sv_addr,0xff),bit.rshift(sv_addr,8))
-		data = data .. string.char(bit.band(sv_val,0xff),bit.rshift(sv_val,8))
+		data = sv_data
 	else
 		return nil,'no command'
 	end
@@ -338,10 +336,8 @@ local function VVM_ReadMetrics()
 				
 				if Mode.value == 0 then --mode is normal
 					--Vera UI is truncating spaces, so in order to keep string lengths as wanted spaces are replaced with empty chars. max. temperature string length is 5 (-xx.x)
-					row2,_ = string.gsub(string.format("% 5.1f°C % 5.1f°C  %3d%%", Extract.value, Exhaust.value, Fanspeed.value),' ',' ')
-					row2 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">" .. row2 .. "</span>"
-					row3,_ = string.gsub(string.format("% 5.1f°C % 5.1f°C  %3d%%", Supply.value, Outdoor.value, Humidity.value),' ',' ')
-					row3 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">" .. row3 .. "</span>"
+					row2 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">" .. (string.gsub(string.format("% 5.1f°C % 5.1f°C  %3d%%</span>", Extract.value, Exhaust.value, Fanspeed.value),' ',' '))
+					row3 = "<span style = \"font-size: 11pt;font-family:monospace;font-weight:bold\">" .. (string.gsub(string.format("% 5.1f°C % 5.1f°C  %3d%%</span>", Supply.value, Outdoor.value, Humidity.value),' ',' '))
 
 					if Fault.value == 1 then
 						st = 'FAULTED'
@@ -390,15 +386,22 @@ local function VVM_SetProfile(p)
 	end
 end
 
+--addr and val must be equal size tables
 local function VVM_SetVariable(addr,val)
 	local a, b = VVM_wsconnect(VVM_ip,80)
 
-	sv_addr = addr
-	sv_val = val
-
 	if a ~= nil then
-		local a, b = VVM_wssend("setvariable")
-		log(string.format("Set Variable: %d %d", addr,val))
+		local a, b
+
+		--construct variable length message without checksum
+		a = 2+table.getn(addr)*2
+		sv_data = string.char(bit.band(a,0xff), bit.rshift(a,8), 0xf9, 0x00)
+
+		for i=1, #addr do
+			sv_data = sv_data .. string.char(bit.band(addr[i],0xff), bit.rshift(addr[i],8), bit.band(val[i],0xff), bit.rshift(val[i],8))
+		end
+
+		a, b = VVM_wssend("setvariable")
 		if a ~= nil then
 			VVM_wsreceive()
 		end
@@ -520,14 +523,32 @@ function actionSetOnOff(onoff, dev)
 			x = 5
 		end
 
-		VVM_SetVariable(4610,x)
+		VVM_SetVariable({4610},{x})
 		log("set OnOff")
 	end
 end
 
+--addr and val need to be sent as string of comma separated values e.g. "10,22,50"
 function actionSetVariable(addr, val, dev)
 	if isconnected then
-		VVM_SetVariable(addr,val)
+		if type(addr) == "string" and type(val) == "string" then
+			local addr_table={}
+			local val_table={}
+			
+			--convert strings to tables
+			for str in string.gmatch(addr, "([^"..','.."]+)") do
+				table.insert(addr_table, tonumber(str))
+			end
+			for str in string.gmatch(val, "([^"..','.."]+)") do
+				table.insert(val_table, tonumber(str))
+			end
+			
+			--check if tables are same size
+			if table.getn(addr_table) == table.getn(val_table) then
+				VVM_SetVariable(addr_table,val_table)
+				log("set Variable")
+			end
+		end
 	end
 end
 

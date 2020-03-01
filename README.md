@@ -44,6 +44,24 @@ The plugin itself does not support standard device services e.g. temperature or 
 
 The plugin provides basic events (like temperature goes below or above) to be used in Vera scenes and notifications. If more complex automation is needed it can be again achieved by using another plugin, for example https://github.com/toggledbits/Reactor which provides great selection of rules for any task.
 
+Following actions are provided by the plugin to control ventilation unit:
+- SetProfileHome()
+- SetProfileAway()
+- SetProfileBoost()
+- SetProfileFireplace()
+- SetProfileExtra()
+Each of these actions set the operating profile for ventilation unit. Actions do not take any parameters.
+
+- SetOnOff(onoff)
+Sets the ventilation unit on or off. Parameter is boolean type (1=turn unit on, 0=turn unit off).
+
+- SetVariable(addr, val)
+Sets one or multiple variable(s) in the ventilation unit. Address and value parameters are string type. When setting multiple values addresses and corresponding values must be comma separated.
+Example to set one variable: SetVariable("4610", "0")
+Example to set multiple variables: SetVariable("20493,20494,20495,4614", "29015,40,45,65535")
+
+
+
 # Links
 [Vallox ventilation units](https://www.vallox.com/en/products/vallox_ventilation_units.html)
 
